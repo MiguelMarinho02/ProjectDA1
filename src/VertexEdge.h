@@ -1,14 +1,13 @@
-// By: Gonçalo Leão
 
-#ifndef DA_TP_CLASSES_VERTEX_EDGE
-#define DA_TP_CLASSES_VERTEX_EDGE
+#ifndef PROJETODA1_VERTEXEDGE_H
+#define PROJETODA1_VERTEXEDGE_H
 
 #include <iostream>
 #include <vector>
 #include <queue>
 #include <limits>
 #include <algorithm>
-#include "../data_structures/MutablePriorityQueue.h"
+#include "Station.h"
 
 class Edge;
 
@@ -18,7 +17,7 @@ class Edge;
 
 class Vertex {
 public:
-    Vertex(int id);
+    Vertex(int id, Station station);
     bool operator<(Vertex & vertex) const; // // required by MutablePriorityQueue
 
     int getId() const;
@@ -36,12 +35,12 @@ public:
     void setIndegree(unsigned int indegree);
     void setDist(double dist);
     void setPath(Edge *path);
-    Edge * addEdge(Vertex *dest, double w);
+    Edge * addEdge(Vertex *dest, double w, string service);
     bool removeEdge(int destID);
 
-    friend class MutablePriorityQueue<Vertex>;
 protected:
-    int id;                // identifier
+    int id;    // identifier
+    Station station;
     std::vector<Edge *> adj;  // outgoing edges
 
     // auxiliary fields
@@ -60,7 +59,7 @@ protected:
 
 class Edge {
 public:
-    Edge(Vertex *orig, Vertex *dest, double w);
+    Edge(Vertex *orig, Vertex *dest, double w, string service);
 
     Vertex * getDest() const;
     double getWeight() const;
@@ -75,6 +74,7 @@ public:
 protected:
     Vertex * dest; // destination vertex
     double weight; // edge weight, can also be used for capacity
+    string service;
 
     // auxiliary fields
     bool selected = false;
@@ -86,4 +86,4 @@ protected:
     double flow; // for flow-related problems
 };
 
-#endif /* DA_TP_CLASSES_VERTEX_EDGE */
+#endif //PROJETODA1_VERTEXEDGE_H
