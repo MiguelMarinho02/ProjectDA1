@@ -21,6 +21,7 @@ public:
     bool operator<(Vertex & vertex) const; // // required by MutablePriorityQueue
 
     int getId() const;
+    string getName();
     std::vector<Edge *> getAdj() const;
     bool isVisited() const;
     bool isProcessing() const;
@@ -37,6 +38,7 @@ public:
     void setPath(Edge *path);
     Edge * addEdge(Vertex *dest, double w, string service);
     bool removeEdge(int destID);
+    Station getStation();
 
 protected:
     int id;    // identifier

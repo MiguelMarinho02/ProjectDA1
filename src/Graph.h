@@ -17,6 +17,7 @@ public:
     * Auxiliary function to find a vertex with a given ID.
     */
     Vertex *findVertex(const int &id) const;
+    Vertex *findVertex(Station s);
     /*
      *  Adds a vertex with a given content or info (in) to a graph (this).
      *  Returns true if successful, and false if a vertex with that content already exists.

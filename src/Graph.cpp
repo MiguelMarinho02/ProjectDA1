@@ -18,6 +18,13 @@ Vertex * Graph::findVertex(const int &id) const {
     return nullptr;
 }
 
+Vertex * Graph::findVertex(Station s) {
+    for (auto v : vertexSet)
+        if (v->getStation().name == s.name)
+            return v;
+    return nullptr;
+}
+
 /*
  * Finds the index of the vertex with a given content.
  */

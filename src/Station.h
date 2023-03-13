@@ -9,7 +9,7 @@ using namespace std;
 class Station {
 public:
     Station(string name, string district, string municipality, string township, string line);
-private:
+    Station(string name);
     string name;
     string district;
     string municipality;

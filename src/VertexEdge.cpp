@@ -52,6 +52,14 @@ bool Vertex::operator<(Vertex & vertex) const {
     return this->dist < vertex.dist;
 }
 
+Station Vertex::getStation() {
+    return station;
+}
+
+string Vertex::getName() {
+    return station.name;
+}
+
 int Vertex::getId() const {
     return this->id;
 }

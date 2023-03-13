@@ -9,3 +9,7 @@ Station::Station(string name, string district, string municipality, string towns
     this->township = township;
     this->line = line;
 }
+
+Station::Station(string name){
+    this->name = name;
+}
