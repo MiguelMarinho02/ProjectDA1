@@ -122,20 +122,19 @@ int Graph::bfs_for_max_flow(int source, int destination) {
 int Graph::maxFlow(int source, int destination) {
     int totalFlow = 0;
 
+    Graph rGraph = (*this);
     while (true) {
         // find an augmenting path using BFS
-        int path_flow = bfs_for_max_flow(source, destination);
+        int path_flow = rGraph.bfs_for_max_flow(source, destination);
         // if no augmenting path found, break the loop
         if (path_flow == 0) {
             break;
         }
-
         // update residual graph
         for (int v = destination; v != source; v = vertexSet[v]->getPath()->getOrig()->getId()) {
-            vertexSet[v]->getPath()->setFlow(vertexSet[v]->getPath()->getFlow() + path_flow);
-            vertexSet[v]->getPath()->getReverse()->setFlow(vertexSet[v]->getPath()->getReverse()->getFlow() - path_flow);
+            rGraph.getVertexSet()[v]->getPath()->setFlow(vertexSet[v]->getPath()->getFlow() + path_flow);
+            rGraph.getVertexSet()[v]->getPath()->getReverse()->setFlow(vertexSet[v]->getPath()->getReverse()->getFlow() - path_flow);
         }
-
         // update total flow
         totalFlow += path_flow;
     }
