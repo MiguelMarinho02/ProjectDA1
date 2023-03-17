@@ -116,6 +116,7 @@ void Vertex::setPath(Edge *path) {
     this->path = path;
 }
 
+
 /********************** Edge  ****************************/
 
 Edge::Edge(Vertex *orig, Vertex *dest, double w, string service): orig(orig), dest(dest), weight(w), service(service) {}
@@ -154,4 +155,8 @@ void Edge::setReverse(Edge *reverse) {
 
 void Edge::setFlow(double flow) {
     this->flow = flow;
+}
+
+string Edge::getService() const{
+    return service;
 }

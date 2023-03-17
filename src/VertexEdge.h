@@ -69,6 +69,7 @@ public:
     Vertex * getOrig() const;
     Edge *getReverse() const;
     double getFlow() const;
+    string getService() const;
 
     void setSelected(bool selected);
     void setReverse(Edge *reverse);

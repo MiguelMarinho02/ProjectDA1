@@ -93,3 +93,53 @@ Graph::~Graph() {
     deleteMatrix(distMatrix, vertexSet.size());
     deleteMatrix(pathMatrix, vertexSet.size());
 }
+
+int Graph::bfs_for_max_flow(int source, int destination) {
+    vertexSet[source]->setVisited(true);
+    queue<pair<int,int>> q;
+    q.push({source,INT_MAX});
+    while(!q.empty()){
+        int u = q.front().first;
+        int path_flow = q.front().second;
+        q.pop();
+        for(Edge *e : vertexSet[u]->getAdj()){
+            int v = e->getDest()->getId();
+            int left_over_capacity = e->getWeight() - e->getFlow();
+            if(!(vertexSet[v]->isVisited()) && left_over_capacity > 0){
+                int new_flow = min(left_over_capacity,path_flow);
+                vertexSet[v]->setPath(e);
+                vertexSet[v]->setVisited(true);
+                if(destination == v){
+                    return new_flow;
+                }
+                q.push({v,new_flow});
+            }
+        }
+    }
+    return 0; //never reached the destination
+}
+
+int Graph::maxFlow(int source, int destination) {
+    int totalFlow = 0;
+
+    while (true) {
+        // find an augmenting path using BFS
+        int path_flow = bfs_for_max_flow(source, destination);
+        // if no augmenting path found, break the loop
+        if (path_flow == 0) {
+            break;
+        }
+
+        // update residual graph
+        for (int v = destination; v != source; v = vertexSet[v]->getPath()->getOrig()->getId()) {
+            vertexSet[v]->getPath()->setFlow(vertexSet[v]->getPath()->getFlow() + path_flow);
+            vertexSet[v]->getPath()->getReverse()->setFlow(vertexSet[v]->getPath()->getReverse()->getFlow() - path_flow);
+        }
+
+        // update total flow
+        totalFlow += path_flow;
+    }
+
+    // return maximum flow
+    return totalFlow;
+}
