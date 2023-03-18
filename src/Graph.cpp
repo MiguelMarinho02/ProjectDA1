@@ -12,16 +12,20 @@ std::vector<Vertex *> Graph::getVertexSet() const {
  * Auxiliary function to find a vertex with a given content.
  */
 Vertex * Graph::findVertex(const int &id) const {
-    for (auto v : vertexSet)
-        if (v->getId() == id)
+    for (auto v : vertexSet){
+        if (v->getId() == id) {
             return v;
+        }
+    }
     return nullptr;
 }
 
 Vertex * Graph::findVertex(Station s) {
-    for (auto v : vertexSet)
-        if (v->getStation().name == s.name)
+    for (auto v : vertexSet) {
+        if (v->getStation().name == s.name){
             return v;
+        }
+    }
     return nullptr;
 }
 
@@ -71,27 +75,7 @@ bool Graph::addBidirectionalEdge(const int &sourc, const int &dest, double w, st
     return true;
 }
 
-void deleteMatrix(int **m, int n) {
-    if (m != nullptr) {
-        for (int i = 0; i < n; i++)
-            if (m[i] != nullptr)
-                delete [] m[i];
-        delete [] m;
-    }
-}
-
-void deleteMatrix(double **m, int n) {
-    if (m != nullptr) {
-        for (int i = 0; i < n; i++)
-            if (m[i] != nullptr)
-                delete [] m[i];
-        delete [] m;
-    }
-}
-
 Graph::~Graph() {
-    deleteMatrix(distMatrix, vertexSet.size());
-    deleteMatrix(pathMatrix, vertexSet.size());
 }
 
 int Graph::bfs_for_max_flow(int source, int destination) {

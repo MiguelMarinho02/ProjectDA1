@@ -54,7 +54,6 @@ protected:
 
     std::vector<Edge *> incoming; // incoming edges
 
-    int queueIndex = 0; 		// required by MutablePriorityQueue and UFDS
 };
 
 /********************** Edge  ****************************/
@@ -77,13 +76,13 @@ public:
 protected:
     Vertex * dest; // destination vertex
     double weight; // edge weight, can also be used for capacity
-    string service;
+    string service = "";
 
     // auxiliary fields
     bool selected = false;
 
     // used for bidirectional edges
-    Vertex *orig;
+    Vertex *orig = nullptr;
     Edge *reverse = nullptr;
 
     double flow = 0; // for flow-related problems

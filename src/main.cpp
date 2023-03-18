@@ -7,8 +7,10 @@
 
 using namespace std;
 
+///Function that displays the menu
+///Complexity: O(1)
 void menuDisplay() {
-    cout << "Menu \n Enter your option:" << endl;
+    cout << "Menu \nEnter your option:" << endl;
     cout << "1) Read data files" << endl;
     cout << "Railway manager: \n";
     cout << "2) Find the maximum amount of trains between two stations \n";
@@ -19,7 +21,7 @@ void menuDisplay() {
     cout << "Reliability and line failures: \n";
     cout << "7) In reduced connectivity, get max amount of trains travelling between two stations \n";
     cout << "8) In segment failure, get most affected stations \n";
-    cout << "0) Exit";
+    cout << "0) Exit\n";
     cout << "Option:";
 }
 
@@ -92,13 +94,46 @@ void create_networks(Graph &g){
 
 }
 
+///Function that computes maximum num of trains between 2 given stations
+///Complexity: O(N^2)
+void max_num_trains_two_stations(Graph graph){
+    string s1,s2;
+    cin.ignore (std::numeric_limits<std::streamsize>::max(), '\n');
+    cout << "\nPlease Input the name of the origin station:";
+    getline(cin,s1);
+    cout << "\nPlease Input the name of the destination station:";
+    getline(cin,s2);
+    cout << "Max num of trains:" << graph.maxFlow(graph.findVertex(Station(s1))->getId(),graph.findVertex(Station(s2))->getId()) << endl;
+}
+
 
 int main() {
+    cout << "Please build the graph before selecting the other options\n";
     Graph graph;
+    int key = 0; //equals to 1 to get inside of loop
+    while(key){
+        menuDisplay();
+        cin >> key;
+        if(key == 1){
+            create_stations(graph);
+            create_networks(graph);
+            cout << "\nRailways built" << endl;
+        }
+        else if(key == 2){
+            max_num_trains_two_stations(graph);
+        }
+
+        for(int i = 0; i < graph.getNumVertex(); i++){
+            graph.getVertexSet()[i]->setVisited(false);
+            graph.getVertexSet()[i]->setPath(nullptr);
+        }
+    }
     create_stations(graph);
     create_networks(graph);
-    int c = graph.maxFlow(graph.findVertex(Station("Alcains"))->getId(),graph.findVertex(Station("Alcaide"))->getId());
-    cout << c;
-
+    std::string s1;
+    getline(cin,s1);
+    if(graph.findVertex(Station(s1)) == nullptr){
+        cout << "missed aha\n";
+    }
     return 0;
 }
