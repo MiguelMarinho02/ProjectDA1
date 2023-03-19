@@ -103,7 +103,13 @@ void max_num_trains_two_stations(Graph graph){
     getline(cin,s1);
     cout << "\nPlease Input the name of the destination station:";
     getline(cin,s2);
-    cout << "Max num of trains:" << graph.maxFlow(graph.findVertex(Station(s1))->getId(),graph.findVertex(Station(s2))->getId()) << endl;
+    int max_trains = graph.maxFlow(graph.findVertex(Station(s1))->getId(),graph.findVertex(Station(s2))->getId());
+    if(max_trains == 0){
+        cout << "Found no connection between this stations\n";
+    }
+    else{
+        cout << "Max num of trains:" << max_trains << endl;
+    }
 }
 
 
