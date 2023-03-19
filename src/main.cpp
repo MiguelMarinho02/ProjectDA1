@@ -26,7 +26,7 @@ void menuDisplay() {
 }
 
 
-///Function that builds the vertexs
+///Function that builds the graph's nodes
 ///Complexity: O(N^2)
 void create_stations(Graph &g){
     ifstream file("../files/stations.csv");
@@ -110,7 +110,8 @@ void max_num_trains_two_stations(Graph graph){
 int main() {
     cout << "Please build the graph before selecting the other options\n";
     Graph graph;
-    int key = 0; //equals to 1 to get inside of loop
+    int key = 1; //equals to 1 to get inside of loop
+    Vertex *v;
     while(key){
         menuDisplay();
         cin >> key;
@@ -123,17 +124,11 @@ int main() {
             max_num_trains_two_stations(graph);
         }
 
-        for(int i = 0; i < graph.getNumVertex(); i++){
-            graph.getVertexSet()[i]->setVisited(false);
-            graph.getVertexSet()[i]->setPath(nullptr);
-        }
+        Graph temp;                             //graph is storing vars even though we are only passing a copy of the graph
+        create_stations(temp);               //have to do this again because either I or c++ is stupid
+        create_networks(temp);
+        graph = temp;
     }
-    create_stations(graph);
-    create_networks(graph);
-    std::string s1;
-    getline(cin,s1);
-    if(graph.findVertex(Station(s1)) == nullptr){
-        cout << "missed aha\n";
-    }
+
     return 0;
 }
