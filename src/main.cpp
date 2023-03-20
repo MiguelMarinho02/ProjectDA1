@@ -118,10 +118,10 @@ void max_amount_trains_capacity(Graph graph){
     cout << "Loading:\nIt is not stuck, it just takes a long time to finish"<< endl;
     int max_trains = graph.getVertexSet()[0]->getAdj()[0]->getWeight();
     for(int i = 0; i < graph.getNumVertex(); i++){
-        for(int j = 0; j < graph.getNumVertex(); j++){
+        for(int j = i+1; j < graph.getNumVertex(); j++){
             cout << i << " " << j << endl;
             int cap = graph.maxFlow(graph.getVertexSet()[i]->getId(),graph.getVertexSet()[j]->getId());
-            if(cap >= max_trains && i != j){
+            if(cap >= max_trains){
                 max_trains = cap;
                 pair<Vertex*,Vertex*> p(graph.getVertexSet()[i],graph.getVertexSet()[j]);
                 pairs.push_back(p);
