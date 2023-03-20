@@ -114,11 +114,6 @@ int Graph::maxFlow(int source, int destination) {
         if (path_flow == 0) {
             break;
         }
-        // update residual graph
-        for (int v = destination; v != source; v = rGraph.getVertexSet()[v]->getPath()->getOrig()->getId()) {
-            rGraph.getVertexSet()[v]->getPath()->setFlow(vertexSet[v]->getPath()->getFlow() + path_flow);
-            rGraph.getVertexSet()[v]->getPath()->getReverse()->setFlow(vertexSet[v]->getPath()->getReverse()->getFlow() - path_flow);
-        }
         // update total flow
         totalFlow += path_flow;
     }

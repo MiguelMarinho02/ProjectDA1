@@ -95,7 +95,7 @@ void create_networks(Graph &g){
 }
 
 ///Function that computes maximum num of trains between 2 given stations
-///Complexity: O(N^2)
+///Complexity: O(VE^2)
 void max_num_trains_two_stations(Graph graph){
     string s1,s2;
     cin.ignore (std::numeric_limits<std::streamsize>::max(), '\n');
@@ -112,12 +112,43 @@ void max_num_trains_two_stations(Graph graph){
     }
 }
 
+void max_amount_trains_capacity(Graph graph){
+    vector<pair<Vertex*,Vertex*>> pairs;
+    vector<int> capacities;
+    cout << "Loading:\nIt is not stuck, it just takes a long time to finish"<< endl;
+    int max_trains = graph.getVertexSet()[0]->getAdj()[0]->getWeight();
+    for(int i = 0; i < graph.getNumVertex(); i++){
+        for(int j = 0; j < graph.getNumVertex(); j++){
+            cout << i << " " << j << endl;
+            int cap = graph.maxFlow(graph.getVertexSet()[i]->getId(),graph.getVertexSet()[j]->getId());
+            if(cap >= max_trains && i != j){
+                max_trains = cap;
+                pair<Vertex*,Vertex*> p(graph.getVertexSet()[i],graph.getVertexSet()[j]);
+                pairs.push_back(p);
+                capacities.push_back(cap);
+            }
+
+            for(int i1 = 0; i1 < graph.getNumVertex(); i1++){
+                for(int j1 = 0; j1 < graph.getVertexSet()[i1]->getAdj().size(); j1++){
+                    graph.getVertexSet()[i1]->setVisited(false);
+                    graph.getVertexSet()[i1]->getAdj()[j1]->setFlow(0);
+                }
+            }
+        }
+    }
+    cout << "\nHere are the station/s that require the most ammount of trains\nCapacity: " << max_trains << endl;
+    for(int i = 0; i < pairs.size(); i++){
+        if(capacities[i] == max_trains){
+            cout << pairs[i].first->getName() << " --> " << pairs[i].second->getName() << endl;
+        }
+    }
+
+}
 
 int main() {
     cout << "Please build the graph before selecting the other options\n";
     Graph graph;
     int key = 1; //equals to 1 to get inside of loop
-    Vertex *v;
     while(key){
         menuDisplay();
         cin >> key;
@@ -129,11 +160,16 @@ int main() {
         else if(key == 2){
             max_num_trains_two_stations(graph);
         }
+        else if(key == 3){
+            max_amount_trains_capacity(graph);
+        }
 
-        Graph temp;                             //graph is storing vars even though we are only passing a copy of the graph
-        create_stations(temp);               //have to do this again because either I or c++ is stupid
-        create_networks(temp);
-        graph = temp;
+        for(int i = 0; i < graph.getNumVertex(); i++){
+            for(int j = 0; j < graph.getVertexSet()[i]->getAdj().size(); j++){
+                graph.getVertexSet()[i]->setVisited(false);
+                graph.getVertexSet()[i]->getAdj()[j]->setFlow(0);
+            }
+        }
     }
 
     return 0;
