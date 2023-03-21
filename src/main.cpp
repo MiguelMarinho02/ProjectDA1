@@ -10,15 +10,15 @@ using namespace std;
 ///Function that displays the menu
 ///Complexity: O(1)
 void menuDisplay() {
-    cout << "Menu \nEnter your option:" << endl;
+    cout << "\n<---------------------------Menu------------------------------>\nEnter your option:" << endl;
     cout << "1) Read data files" << endl;
-    cout << "Railway manager: \n";
+    cout << "<----------------------Railway manager------------------------>\n";
     cout << "2) Find the maximum amount of trains between two stations \n";
     cout << "3) Find the pair of stations that require the most amount of trains when taking full advantage of the network \n";
     cout << "4) Budget information \n";
     cout << "5) Get maximum amount of trains arriving at a station simultaneously \n";
     cout << "6) Optimization analysis \n";
-    cout << "Reliability and line failures: \n";
+    cout << "<----------------Reliability and line failures---------------->\n";
     cout << "7) In reduced connectivity, get max amount of trains travelling between two stations \n";
     cout << "8) In segment failure, get most affected stations \n";
     cout << "0) Exit\n";
@@ -43,7 +43,21 @@ void create_stations(Graph &g){
         getline(ss,name,',');
         getline(ss,district,',');
         getline(ss,municipality,',');
+        if(municipality[0] == '"'){
+            string rest;
+            getline(ss,rest,'"');
+            municipality += rest;
+            municipality = municipality.substr(1,municipality.size()-1);
+            getline(ss,rest,',');
+        }
         getline(ss,township,',');
+        if(township[0] == '"'){
+            string rest;
+            getline(ss,rest,'"');
+            township += rest;
+            township = township.substr(1, township.size()-1);
+            getline(ss,rest,',');
+        }
         getline(ss,line,',');
         Station station(name,district,municipality,township,line);
         if(g.findVertex(station) != nullptr){
