@@ -125,7 +125,8 @@ void max_num_trains_two_stations(Graph graph){
         cout << "Max num of trains:" << max_trains << endl;
     }
 }
-
+///Function that computes maximum num of trains between all pairs of stations
+///Complexity: O(V^3E^2)
 void max_amount_trains_capacity(Graph graph){
     vector<pair<Vertex*,Vertex*>> pairs;
     vector<int> capacities;
@@ -150,7 +151,7 @@ void max_amount_trains_capacity(Graph graph){
             }
         }
     }
-    cout << "\nHere are the station/s that require the most ammount of trains\nCapacity: " << max_trains << endl;
+    cout << "\nHere are the station/s that require the most amount of trains\nCapacity: " << max_trains << endl;
     for(int i = 0; i < pairs.size(); i++){
         if(capacities[i] == max_trains){
             cout << pairs[i].first->getName() << " --> " << pairs[i].second->getName() << endl;

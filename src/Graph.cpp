@@ -121,7 +121,7 @@ int Graph::maxFlow(int source, int destination) {
         }
 
         for(Edge *e = rGraph.getVertexSet()[destination]->getPath(); e->getOrig()->getId() != source; e = e->getOrig()->getPath()){
-            path_flow = min(path_flow,e->getFlow());
+            e->setFlow(e->getFlow()-path_flow);
         }
         // update total flow
         totalFlow += path_flow;
