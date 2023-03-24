@@ -179,7 +179,7 @@ void budgetInformation(Graph g, set<string> set1){
     }
 }
 
-///Function that computes maximum num of trains that can arrive at a single station
+///Function that computes maximum num of trains that can arrive at a single station by doing a sum of the station´s incoming edges
 ///Complexity: O(V + E)
 void max_num_trains_arrive_at_a_station_simultaneously(Graph g){
     string input_string;
