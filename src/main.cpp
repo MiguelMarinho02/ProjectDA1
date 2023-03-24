@@ -4,6 +4,7 @@
 #include "VertexEdge.h"
 #include <fstream>
 #include <sstream>
+#include <set>
 
 using namespace std;
 
@@ -28,7 +29,7 @@ void menuDisplay() {
 
 ///Function that builds the graph's nodes
 ///Complexity: O(N^2)
-void create_stations(Graph &g){
+void create_stations(Graph &g, set<string> &d, set<string> &m){
     ifstream file("../files/stations.csv");
     string string1;
     string name, district ,municipality ,township ,line;
@@ -59,6 +60,8 @@ void create_stations(Graph &g){
             getline(ss,rest,',');
         }
         getline(ss,line,',');
+        d.insert(district);
+        m.insert(municipality);
         Station station(name,district,municipality,township,line);
         if(g.findVertex(station) != nullptr){
             continue;
@@ -134,7 +137,6 @@ void max_amount_trains_capacity(Graph graph){
     int max_trains = graph.getVertexSet()[0]->getAdj()[0]->getWeight();
     for(int i = 0; i < graph.getNumVertex(); i++){
         for(int j = i+1; j < graph.getNumVertex(); j++){
-            cout << i << " " << j << endl;
             int cap = graph.maxFlow(graph.getVertexSet()[i]->getId(),graph.getVertexSet()[j]->getId());
             if(cap >= max_trains){
                 max_trains = cap;
@@ -159,16 +161,54 @@ void max_amount_trains_capacity(Graph graph){
     }
 
 }
+///Function that shows where management should assign larger budgets for the purchasing and maintenance of trains
+///Complexity: O()
+void budgetInformation(Graph g, set<string> set1){
+    vector<pair<string,int>> top;
+    int min = set1.size() - 1;
+
+    cout << "\n" << "Introduce here the number of the top k:";
+    int k;
+    cin >> k;
+    if(k > min){
+        k = min;
+    }
+
+    for(string s : set1){
+        //this should build a subgraph with only the districts/mun from the set and then calculate the max
+    }
+}
+
+///Function that computes maximum num of trains that can arrive at a single station
+///Complexity: O(V + E)
+void max_num_trains_arrive_at_a_station_simultaneously(Graph g){
+    string input_string;
+    cin.ignore (std::numeric_limits<std::streamsize>::max(), '\n');
+    cout << "\nPlease Input the name of the origin station:";
+    getline(cin,input_string);
+    double total_trains = 0;
+    for(Vertex *v : g.getVertexSet()){
+        if(v->getName() == input_string){
+            for(Edge *e : v->getIncoming()){
+                total_trains += e->getWeight();
+            }
+            break;
+        }
+    }
+    cout << "\n" << total_trains << " trains can arrive to " << input_string << " station" << endl;
+}
 
 int main() {
     cout << "Please build the graph before selecting the other options\n";
     Graph graph;
+    set<string> districts;
+    set<string> municipalities;
     int key = 1; //equals to 1 to get inside of loop
     while(key){
         menuDisplay();
         cin >> key;
         if(key == 1){
-            create_stations(graph);
+            create_stations(graph, districts, municipalities);
             create_networks(graph);
             cout << "\nRailways built" << endl;
         }
@@ -178,13 +218,24 @@ int main() {
         else if(key == 3){
             max_amount_trains_capacity(graph);
         }
-
-        for(int i = 0; i < graph.getNumVertex(); i++){
-            for(int j = 0; j < graph.getVertexSet()[i]->getAdj().size(); j++){
-                graph.getVertexSet()[i]->setVisited(false);
-                graph.getVertexSet()[i]->getAdj()[j]->setFlow(0);
+        else if(key == 4){
+            int key_2 = 0;
+            cout << "\nWould you like to see the top k:\n" << "1-Districts\n2-Municipalities: \nSelect here:";
+            cin >> key_2;
+            if(key_2 == 1){
+                budgetInformation(graph, districts);
+            }
+            else if(key_2 == 2){
+                budgetInformation(graph, municipalities);
+            }
+            else{
+                cout << "Invalid option selected \n";
             }
         }
+        else if(key == 5){
+            max_num_trains_arrive_at_a_station_simultaneously(graph);
+        }
+
     }
 
     return 0;
