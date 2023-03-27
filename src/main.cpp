@@ -186,19 +186,43 @@ void budgetInformation(Graph g, set<string> set1){
     }
 }
 
-///Function that computes maximum num of trains that can arrive at a single station by doing a sum of the station´s incoming edges
-///Complexity: O(V + E)
+///Function that computes maximum num of trains that can arrive at a single station by selecting the stations that are 10 stations away as sources
+///Complexity: O(VE^2)
 void max_num_trains_arrive_at_a_station_simultaneously(Graph g){
     string input_string;
     cin.ignore (std::numeric_limits<std::streamsize>::max(), '\n');
     cout << "\nPlease Input the name of the origin station:";
     getline(cin,input_string);
     double total_trains = 0;
-    Station station("super");
-    g.addVertex(-1,station);
-    for(Vertex *v : g.getVertexSet()){
-        if(v->getName() == input_string){continue;}
-        g.addBidirectionalEdge(-1, v->getId(), INF, "service");
+    Vertex *origin = g.findVertex(Station(input_string));
+    int number_of_tracking_stations = 10; //this number should be big enough to allow us to see the actual number of trains a station can get at the same time
+    queue<Vertex *> back_tracking_queue;
+    origin->setVisited(true);
+    back_tracking_queue.push(origin);
+    while (number_of_tracking_stations){
+        queue<Vertex *> aux;
+        queue<Vertex *> backup = back_tracking_queue;
+        while(!back_tracking_queue.empty()){
+            for(Edge *e : back_tracking_queue.front()->getAdj()){
+                if(e->getDest()->isVisited()){
+                    continue;
+                }
+                e->getDest()->setVisited(true);
+                aux.push(e->getDest());
+            }
+            back_tracking_queue.pop();
+        }
+        back_tracking_queue = aux;
+        if(back_tracking_queue.empty()){
+            back_tracking_queue = backup;
+            break;
+        }
+        number_of_tracking_stations--;
+    }
+    g.addVertex(-1,Station("super"));
+    while(!back_tracking_queue.empty()){
+        g.addBidirectionalEdge(-1, back_tracking_queue.front()->getId(), INF, "service");
+        back_tracking_queue.pop();
     }
     total_trains = g.maxFlow(-1,g.findVertex(Station(input_string))->getId());
     cout << "\n" << total_trains << " trains can arrive to " << input_string << " station" << endl;
