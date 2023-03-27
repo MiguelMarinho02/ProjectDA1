@@ -131,11 +131,18 @@ void max_num_trains_two_stations(Graph graph){
 ///Function that computes maximum num of trains between all pairs of stations
 ///Complexity: O(V^3E^2)
 void max_amount_trains_capacity(Graph graph){
+    int count = 0, progress_bar_count = 0;
     vector<pair<Vertex*,Vertex*>> pairs;
     vector<int> capacities;
-    cout << "Loading:\nIt is not stuck, it just takes a long time to finish"<< endl;
+    cout << "Loading:\nWait until it reaches 100%"<< endl;
     int max_trains = graph.getVertexSet()[0]->getAdj()[0]->getWeight();
     for(int i = 0; i < graph.getNumVertex(); i++){
+        if(count % 5 == 0){
+            progress_bar_count++;
+            if(progress_bar_count > 100){progress_bar_count = 100;}
+            cout << "\r" << progress_bar_count << "%" << std::flush;
+        }
+        count++;
         for(int j = i+1; j < graph.getNumVertex(); j++){
             int cap = graph.maxFlow(graph.getVertexSet()[i]->getId(),graph.getVertexSet()[j]->getId());
             if(cap >= max_trains){
@@ -162,7 +169,7 @@ void max_amount_trains_capacity(Graph graph){
 
 }
 ///Function that shows where management should assign larger budgets for the purchasing and maintenance of trains
-///Complexity: O()
+///Complexity: O(nVE^2)
 void budgetInformation(Graph g, set<string> set1){
     vector<pair<string,int>> top;
     int min = set1.size() - 1;
