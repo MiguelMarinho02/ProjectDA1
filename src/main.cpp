@@ -213,7 +213,7 @@ void max_num_trains_arrive_at_a_station_simultaneously(Graph g){
             back_tracking_queue.pop();
         }
         back_tracking_queue = aux;
-        if(back_tracking_queue.empty()){
+        if(back_tracking_queue.size() < origin->getAdj().size()){
             back_tracking_queue = backup;
             break;
         }
