@@ -194,14 +194,13 @@ void max_num_trains_arrive_at_a_station_simultaneously(Graph g){
     cout << "\nPlease Input the name of the origin station:";
     getline(cin,input_string);
     double total_trains = 0;
+    Station station("super");
+    g.addVertex(-1,station);
     for(Vertex *v : g.getVertexSet()){
-        if(v->getName() == input_string){
-            for(Edge *e : v->getIncoming()){
-                total_trains += e->getWeight();
-            }
-            break;
-        }
+        if(v->getName() == input_string){continue;}
+        g.addBidirectionalEdge(-1, v->getId(), INF, "service");
     }
+    total_trains = g.maxFlow(-1,g.findVertex(Station(input_string))->getId());
     cout << "\n" << total_trains << " trains can arrive to " << input_string << " station" << endl;
 }
 
