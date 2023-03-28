@@ -193,38 +193,33 @@ void max_num_trains_arrive_at_a_station_simultaneously(Graph g){
     cin.ignore (std::numeric_limits<std::streamsize>::max(), '\n');
     cout << "\nPlease Input the name of the origin station:";
     getline(cin,input_string);
+
     double total_trains = 0;
     Vertex *origin = g.findVertex(Station(input_string));
-    int number_of_tracking_stations = 10; //this number should be big enough to allow us to see the actual number of trains a station can get at the same time
-    queue<Vertex *> back_tracking_queue;
-    origin->setVisited(true);
-    back_tracking_queue.push(origin);
-    while (number_of_tracking_stations){
-        queue<Vertex *> aux;
-        queue<Vertex *> backup = back_tracking_queue;
-        while(!back_tracking_queue.empty()){
-            for(Edge *e : back_tracking_queue.front()->getAdj()){
-                if(e->getDest()->isVisited()){
-                    continue;
-                }
-                e->getDest()->setVisited(true);
-                aux.push(e->getDest());
-            }
-            back_tracking_queue.pop();
+
+    vector<Vertex *> source_stations;
+    for(Vertex *v : g.getVertexSet()){
+        if(v->getId() == origin->getId()){
+            continue;
         }
-        back_tracking_queue = aux;
-        if(back_tracking_queue.size() < origin->getAdj().size()){
-            back_tracking_queue = backup;
-            break;
+        if(v->getAdj().size() == 1){
+            source_stations.push_back(v);
         }
-        number_of_tracking_stations--;
+        if(v->getAdj().size() == 2 && (v->getAdj()[0]->getService() != v->getAdj()[1]->getService())){
+            source_stations.push_back(v);
+        }
     }
+
     g.addVertex(-1,Station("super"));
-    while(!back_tracking_queue.empty()){
-        g.addBidirectionalEdge(-1, back_tracking_queue.front()->getId(), INF, "service");
-        back_tracking_queue.pop();
+    for(Vertex *v : source_stations){
+        g.addEdge(-1, v->getId(), INF, "service");
     }
+    Vertex *super_source = g.findVertex(-1);
     total_trains = g.maxFlow(-1,g.findVertex(Station(input_string))->getId());
+    for(Vertex *v : source_stations){
+        v->removeEdge(-1);
+        super_source->removeEdge(v->getId());
+    }
     cout << "\n" << total_trains << " trains can arrive to " << input_string << " station" << endl;
 }
 
@@ -267,6 +262,5 @@ int main() {
         }
 
     }
-
     return 0;
 }
