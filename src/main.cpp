@@ -212,12 +212,15 @@ void max_num_trains_arrive_at_a_station_simultaneously(Graph g){
 
     g.addVertex(-1,Station("super"));
     for(Vertex *v : source_stations){
-        g.addEdge(-1, v->getId(), INF, "service");
+        g.addEdge(-1, v->getId(), INF, "STANDARD");
+        g.addEdge(-1, v->getId(), INF, "ALFA PENDULAR");
     }
     Vertex *super_source = g.findVertex(-1);
     total_trains = g.maxFlow(-1,g.findVertex(Station(input_string))->getId());
     for(Vertex *v : source_stations){
         v->removeEdge(-1);
+        v->removeEdge(-1);
+        super_source->removeEdge(v->getId());
         super_source->removeEdge(v->getId());
     }
     cout << "\n" << total_trains << " trains can arrive to " << input_string << " station" << endl;

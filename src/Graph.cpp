@@ -89,14 +89,14 @@ bool Graph::bfs_for_max_flow(Vertex *s, Vertex *t) {
         auto u = q.front();
         q.pop();
         for(auto e : u->getAdj()){
-            if(!e->getDest()->isVisited() && e->getWeight() - e->getFlow() > 0){
+            if((!e->getDest()->isVisited() && e->getWeight() - e->getFlow() > 0)){
                 e->getDest()->setVisited(true);
                 e->getDest()->setPath(e);
                 q.push(e->getDest());
             }
         }
         for(auto e : u->getIncoming()){
-            if(!e->getOrig()->isVisited() &&  e->getFlow() > 0){
+            if((!e->getOrig()->isVisited() &&  e->getFlow() > 0)){
                 e->getOrig()->setVisited(true);
                 e->getOrig()->setPath(e);
                 q.push(e->getOrig());
