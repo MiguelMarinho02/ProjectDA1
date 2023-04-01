@@ -33,7 +33,7 @@ public:
     bool addBidirectionalEdge(const int &sourc, const int &dest, double w, string service);
     bool bfs_for_max_flow(Vertex *s,Vertex *t);
     int maxFlow(int source, int target);
-
+    int maxFlow_minCost(int source , int target, string service);
     int getNumVertex() const;
     std::vector<Vertex *> getVertexSet() const;
 protected:

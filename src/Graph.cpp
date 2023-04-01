@@ -141,3 +141,67 @@ int Graph::maxFlow(int source, int target) {
     }
     return (int) total_flow;
 }
+
+int Graph::maxFlow_minCost(int source , int target, string service){
+    Vertex *s = findVertex(source);
+    Vertex *t = findVertex(target);
+    double d;
+    if(service == "ALFA PENDULAR"){
+        d = 4.0;
+    }
+    else if(service == "STANDARD"){
+        d = 2.0;
+    }
+
+    for(int i = 0; i < getNumVertex(); i++){
+        for(int j = 0; j < vertexSet[i]->getAdj().size(); j++){
+            vertexSet[i]->getAdj()[j]->setFlow(0);
+        }
+    }
+    std::vector<double> aux;
+    double total_flow = 0;
+    while (bfs_for_max_flow(s, t)) {
+        double path_flow = INF;
+        for(auto v = t; v != s; ){
+            auto e = v->getPath();
+            if (e->getDest() == v){
+                path_flow = std::min(path_flow,e->getWeight() - e->getFlow());
+                v = e->getOrig();
+            }
+            else{
+                path_flow = std::min(path_flow,e->getFlow());
+                v = e->getDest();
+            }
+        }
+
+        for(auto v = t; v != s; ){
+            auto e = v->getPath();
+            double flow = e->getFlow();
+            if (e->getDest() == v){
+                e->setFlow(flow + path_flow);
+                v = e->getOrig();
+            }
+            else{
+                e->setFlow(flow - path_flow);
+                v = e->getDest();
+            }
+        }
+
+        aux.push_back(path_flow);
+    }
+
+    if(aux.size() == 0){
+        return 0;
+    }
+
+    double max_ratio = 0;
+    int index = 0;
+    for(int i = 0; i < aux.size(); i++){
+        if(max_ratio < double(aux[i] / d)){
+            index = i;
+            max_ratio = double(aux[i] / d);
+        }
+    }
+
+    return (int) aux[index];
+}

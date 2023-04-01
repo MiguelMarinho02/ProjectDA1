@@ -258,6 +258,27 @@ void max_num_trains_arrive_at_a_station_simultaneously(Graph g_st,Graph g_ap){
     cout << "\n" << total_trains << " trains can arrive to " << input_string << " station" << endl;
 }
 
+void max_trains_min_cost(Graph g_st, Graph g_ap){
+
+    string s1,s2;
+    cin.ignore (std::numeric_limits<std::streamsize>::max(), '\n');
+    cout << "\nPlease Input the name of the origin station:";
+    getline(cin,s1);
+    cout << "\nPlease Input the name of the destination station:";
+    getline(cin,s2);
+
+
+    int max_trains_alfa = g_ap.maxFlow_minCost(g_ap.findVertex(Station(s1))->getId(),g_ap.findVertex(Station(s2))->getId(), "ALFA PENDULAR");
+    int max_trains_standard = g_st.maxFlow_minCost(g_st.findVertex(Station(s1))->getId(),g_st.findVertex(Station(s2))->getId(), "STANDARD");
+
+    if(max_trains_alfa + max_trains_standard == 0){
+        cout << "Found no connection between this stations\n";
+    }
+    else{
+        cout << "Max num of trains with min cost:" << max_trains_alfa + max_trains_standard << endl;
+    }
+}
+
 int main() {
     cout << "Please build the graph before selecting the other options\n";
     Graph graph_st, graph_ap;
@@ -306,6 +327,9 @@ int main() {
         }
         else if(key == 5){
             max_num_trains_arrive_at_a_station_simultaneously(graph_st,graph_ap);
+        }
+        else if(key == 6){
+            max_trains_min_cost(graph_st, graph_ap);
         }
 
     }
