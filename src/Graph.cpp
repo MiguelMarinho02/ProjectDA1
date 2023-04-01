@@ -85,6 +85,7 @@ bool Graph::bfs_for_max_flow(Vertex *s, Vertex *t) {
     s->setVisited(true);
     std::queue<Vertex *> q;
     q.push(s);
+
     while(!q.empty() && !t->isVisited()){
         auto u = q.front();
         q.pop();
@@ -93,13 +94,6 @@ bool Graph::bfs_for_max_flow(Vertex *s, Vertex *t) {
                 e->getDest()->setVisited(true);
                 e->getDest()->setPath(e);
                 q.push(e->getDest());
-            }
-        }
-        for(auto e : u->getIncoming()){
-            if((!e->getOrig()->isVisited() &&  e->getFlow() > 0)){
-                e->getOrig()->setVisited(true);
-                e->getOrig()->setPath(e);
-                q.push(e->getOrig());
             }
         }
     }

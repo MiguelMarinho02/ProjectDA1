@@ -29,7 +29,7 @@ void menuDisplay() {
 
 ///Function that builds the graph's nodes
 ///Complexity: O(N^2)
-void create_stations(Graph &g, set<string> &d, set<string> &m){
+void create_stations(Graph &g_st, Graph &g_ap, set<string> &d, set<string> &m){
     ifstream file("../files/stations.csv");
     string string1;
     string name, district ,municipality ,township ,line;
@@ -63,16 +63,17 @@ void create_stations(Graph &g, set<string> &d, set<string> &m){
         d.insert(district);
         m.insert(municipality);
         Station station(name,district,municipality,township,line);
-        if(g.findVertex(station) != nullptr){
+        if(g_st.findVertex(station) != nullptr){
             continue;
         }
-        g.addVertex(count,station);
+        g_st.addVertex(count,station);
+        g_ap.addVertex(count,station);
         count++;
     }
 }
 ///Function that builds the edges and avoids repetitions
 ///Complexity: O(N^2)
-void create_networks(Graph &g){
+void create_networks(Graph &g_st,Graph &g_ap){
 
     ifstream file("../files/network.csv");
 
@@ -92,72 +93,78 @@ void create_networks(Graph &g){
             continue;
         }
 
-        Vertex *v1 = g.findVertex(Station(station_A));
-        Vertex *v2 = g.findVertex(Station(station_B));
-        bool edge_exists = false;
-        for(auto e : v1->getAdj()){
-            if(e->getDest()->getName() == v2->getName() && e->getService() == service){
-                edge_exists = true;
-                break;
+        if(service == "STANDARD") { //creates edges for standard service
+            Vertex *v1 = g_st.findVertex(Station(station_A));
+            Vertex *v2 = g_st.findVertex(Station(station_B));
+            bool edge_exists = false;
+            for (auto e: v1->getAdj()) {
+                if (e->getDest()->getName() == v2->getName() && e->getService() == service) {
+                    edge_exists = true;
+                    break;
+                }
             }
-        }
 
-        if(edge_exists){
-            continue;
-        }
+            if (edge_exists) {
+                continue;
+            }
 
-        g.addBidirectionalEdge(v1->getId(), v2->getId(), stoi(capacity), service);
+            g_st.addBidirectionalEdge(v1->getId(), v2->getId(), stoi(capacity), service);
+        }
+        else if(service == "ALFA PENDULAR"){ //creates edges for alfa pendular service
+            Vertex *v1 = g_ap.findVertex(Station(station_A));
+            Vertex *v2 = g_ap.findVertex(Station(station_B));
+            bool edge_exists = false;
+            for (auto e: v1->getAdj()) {
+                if (e->getDest()->getName() == v2->getName() && e->getService() == service) {
+                    edge_exists = true;
+                    break;
+                }
+            }
+
+            if (edge_exists) {
+                continue;
+            }
+
+            g_ap.addBidirectionalEdge(v1->getId(), v2->getId(), stoi(capacity), service);
+        }
     }
 
 }
 
 ///Function that computes maximum num of trains between 2 given stations
 ///Complexity: O(VE^2)
-void max_num_trains_two_stations(Graph graph){
-    string s1,s2;
-    cin.ignore (std::numeric_limits<std::streamsize>::max(), '\n');
-    cout << "\nPlease Input the name of the origin station:";
-    getline(cin,s1);
-    cout << "\nPlease Input the name of the destination station:";
-    getline(cin,s2);
-    int max_trains = graph.maxFlow(graph.findVertex(Station(s1))->getId(),graph.findVertex(Station(s2))->getId());
-    if(max_trains == 0){
-        cout << "Found no connection between this stations\n";
-    }
-    else{
-        cout << "Max num of trains:" << max_trains << endl;
-    }
+int max_num_trains_two_stations(Graph g_st, Graph g_ap, string s1, string s2){
+
+    int max_trains = g_st.maxFlow(g_st.findVertex(Station(s1))->getId(),g_st.findVertex(Station(s2))->getId());
+    max_trains += g_ap.maxFlow(g_ap.findVertex(Station(s1))->getId(),g_ap.findVertex(Station(s2))->getId());
+
+    return max_trains;
 }
+
 ///Function that computes maximum num of trains between all pairs of stations
 ///Complexity: O(V^3E^2)
-void max_amount_trains_capacity(Graph graph){
+void max_amount_trains_capacity(Graph g_st, Graph g_ap){
     int count = 0, progress_bar_count = 0;
     vector<pair<Vertex*,Vertex*>> pairs;
     vector<int> capacities;
     cout << "Loading:\nWait until it reaches 100%"<< endl;
-    int max_trains = graph.getVertexSet()[0]->getAdj()[0]->getWeight();
-    for(int i = 0; i < graph.getNumVertex(); i++){
+    int max_trains = g_st.getVertexSet()[0]->getAdj()[0]->getWeight();
+    for(int i = 0; i < g_st.getNumVertex(); i++){
         if(count % 5 == 0){
             progress_bar_count++;
             if(progress_bar_count > 100){progress_bar_count = 100;}
             cout << "\r" << progress_bar_count << "%" << std::flush;
         }
         count++;
-        for(int j = i+1; j < graph.getNumVertex(); j++){
-            int cap = graph.maxFlow(graph.getVertexSet()[i]->getId(),graph.getVertexSet()[j]->getId());
+        for(int j = i+1; j < g_st.getNumVertex(); j++){
+            int cap = max_num_trains_two_stations(g_st, g_ap, g_st.getVertexSet()[i]->getStation().name, g_st.getVertexSet()[j]->getStation().name);
             if(cap >= max_trains){
                 max_trains = cap;
-                pair<Vertex*,Vertex*> p(graph.getVertexSet()[i],graph.getVertexSet()[j]);
+                pair<Vertex*,Vertex*> p(g_st.getVertexSet()[i],g_st.getVertexSet()[j]);
                 pairs.push_back(p);
                 capacities.push_back(cap);
             }
 
-            for(int i1 = 0; i1 < graph.getNumVertex(); i1++){
-                for(int j1 = 0; j1 < graph.getVertexSet()[i1]->getAdj().size(); j1++){
-                    graph.getVertexSet()[i1]->setVisited(false);
-                    graph.getVertexSet()[i1]->getAdj()[j1]->setFlow(0);
-                }
-            }
         }
     }
     cout << "\nHere are the station/s that require the most amount of trains\nCapacity: " << max_trains << endl;
@@ -170,7 +177,7 @@ void max_amount_trains_capacity(Graph graph){
 }
 ///Function that shows where management should assign larger budgets for the purchasing and maintenance of trains
 ///Complexity: O(nVE^2)
-void budgetInformation(Graph g, set<string> set1){
+void budgetInformation(Graph g_st,Graph g_ap, set<string> set1){
     vector<pair<string,int>> top;
     int min = set1.size() - 1;
 
@@ -186,49 +193,74 @@ void budgetInformation(Graph g, set<string> set1){
     }
 }
 
-///Function that computes maximum num of trains that can arrive at a single station by selecting the stations that are 10 stations away as sources
+///Function that computes maximum num of trains that can arrive at a single station by selecting all the source stations and creating a super source to unite all of those sources. We then apply tha max flow
+///algorithm and compute the max_flow.
 ///Complexity: O(VE^2)
-void max_num_trains_arrive_at_a_station_simultaneously(Graph g){
+void max_num_trains_arrive_at_a_station_simultaneously(Graph g_st,Graph g_ap){
     string input_string;
     cin.ignore (std::numeric_limits<std::streamsize>::max(), '\n');
     cout << "\nPlease Input the name of the origin station:";
     getline(cin,input_string);
 
     double total_trains = 0;
-    Vertex *origin = g.findVertex(Station(input_string));
+    Vertex *origin = g_st.findVertex(Station(input_string));
 
-    vector<Vertex *> source_stations;
-    for(Vertex *v : g.getVertexSet()){
+    vector<Vertex *> source_stations_st;
+    for(Vertex *v : g_st.getVertexSet()){
         if(v->getId() == origin->getId()){
             continue;
         }
         if(v->getAdj().size() == 1){
-            source_stations.push_back(v);
-        }
-        if(v->getAdj().size() == 2 && (v->getAdj()[0]->getService() != v->getAdj()[1]->getService())){
-            source_stations.push_back(v);
+            source_stations_st.push_back(v);
         }
     }
 
-    g.addVertex(-1,Station("super"));
-    for(Vertex *v : source_stations){
-        g.addEdge(-1, v->getId(), INF, "STANDARD");
-        g.addEdge(-1, v->getId(), INF, "ALFA PENDULAR");
+    vector<Vertex *> source_stations_ap;
+    for(Vertex *v : g_ap.getVertexSet()){
+        if(v->getId() == origin->getId()){
+            continue;
+        }
+        if(v->getAdj().size() == 1){
+            source_stations_ap.push_back(v);
+        }
     }
-    Vertex *super_source = g.findVertex(-1);
-    total_trains = g.maxFlow(-1,g.findVertex(Station(input_string))->getId());
-    for(Vertex *v : source_stations){
+
+    g_st.addVertex(-1,Station("super"));
+    g_ap.addVertex(-1,Station("super"));
+
+    for(Vertex *v : source_stations_st){
+        g_st.addEdge(-1, v->getId(), INF, "STANDARD");
+    }
+
+    for(Vertex *v : source_stations_ap){
+        g_ap.addEdge(-1, v->getId(), INF, "ALFA PENDULAR");
+    }
+
+    total_trains = g_st.maxFlow(-1,g_st.findVertex(Station(input_string))->getId());
+    total_trains += g_ap.maxFlow(-1,g_ap.findVertex(Station(input_string))->getId());
+
+    Vertex *super_source = g_st.findVertex(-1);
+    for(Vertex *v : source_stations_st){
         v->removeEdge(-1);
         v->removeEdge(-1);
         super_source->removeEdge(v->getId());
         super_source->removeEdge(v->getId());
     }
+
+    super_source = g_ap.findVertex(-1);
+    for(Vertex *v : source_stations_ap){
+        v->removeEdge(-1);
+        v->removeEdge(-1);
+        super_source->removeEdge(v->getId());
+        super_source->removeEdge(v->getId());
+    }
+
     cout << "\n" << total_trains << " trains can arrive to " << input_string << " station" << endl;
 }
 
 int main() {
     cout << "Please build the graph before selecting the other options\n";
-    Graph graph;
+    Graph graph_st, graph_ap;
     set<string> districts;
     set<string> municipalities;
     int key = 1; //equals to 1 to get inside of loop
@@ -236,32 +268,44 @@ int main() {
         menuDisplay();
         cin >> key;
         if(key == 1){
-            create_stations(graph, districts, municipalities);
-            create_networks(graph);
+            create_stations(graph_st,graph_ap, districts, municipalities);
+            create_networks(graph_st,graph_ap);
             cout << "\nRailways built" << endl;
         }
         else if(key == 2){
-            max_num_trains_two_stations(graph);
+            string s1,s2;
+            cin.ignore (std::numeric_limits<std::streamsize>::max(), '\n');
+            cout << "\nPlease Input the name of the origin station:";
+            getline(cin,s1);
+            cout << "\nPlease Input the name of the destination station:";
+            getline(cin,s2);
+            int max_trains = max_num_trains_two_stations(graph_st,graph_ap, s1, s2);
+            if(max_trains == 0){
+                cout << "Found no connection between this stations\n";
+            }
+            else{
+                cout << "Max num of trains:" << max_trains << endl;
+            }
         }
         else if(key == 3){
-            max_amount_trains_capacity(graph);
+            max_amount_trains_capacity(graph_st,graph_ap);
         }
         else if(key == 4){
             int key_2 = 0;
             cout << "\nWould you like to see the top k:\n" << "1-Districts\n2-Municipalities: \nSelect here:";
             cin >> key_2;
             if(key_2 == 1){
-                budgetInformation(graph, districts);
+                budgetInformation(graph_st, graph_ap, districts);
             }
             else if(key_2 == 2){
-                budgetInformation(graph, municipalities);
+                budgetInformation(graph_st, graph_ap, municipalities);
             }
             else{
                 cout << "Invalid option selected \n";
             }
         }
         else if(key == 5){
-            max_num_trains_arrive_at_a_station_simultaneously(graph);
+            max_num_trains_arrive_at_a_station_simultaneously(graph_st,graph_ap);
         }
 
     }
