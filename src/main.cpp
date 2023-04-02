@@ -134,9 +134,16 @@ void create_networks(Graph &g_st,Graph &g_ap){
 ///Function that computes maximum num of trains between 2 given stations
 ///Complexity: O(VE^2)
 int max_num_trains_two_stations(Graph g_st, Graph g_ap, string s1, string s2){
+    Vertex* source_st = g_st.findVertex(Station(s1)), *source_ap = g_ap.findVertex(Station(s1));
+    Vertex* destination_st = g_st.findVertex(Station(s2)), *destination_ap = g_ap.findVertex(Station(s2));
 
-    int max_trains = g_st.maxFlow(g_st.findVertex(Station(s1))->getId(),g_st.findVertex(Station(s2))->getId());
-    max_trains += g_ap.maxFlow(g_ap.findVertex(Station(s1))->getId(),g_ap.findVertex(Station(s2))->getId());
+    if(destination_st == nullptr || destination_ap == nullptr || source_st == nullptr || source_ap == nullptr){
+        cout << "\nInvalid station inserted" << endl;
+        return -1;
+    }
+
+    int max_trains = g_st.maxFlow(source_st->getId(),destination_st->getId());
+    max_trains += g_ap.maxFlow(source_ap->getId(),destination_ap->getId());
 
     return max_trains;
 }
@@ -204,6 +211,10 @@ void max_num_trains_arrive_at_a_station_simultaneously(Graph g_st,Graph g_ap){
 
     double total_trains = 0;
     Vertex *origin = g_st.findVertex(Station(input_string));
+    if(origin == nullptr){
+        cout << "\n" << "Could not find the given station" << endl;
+        return;
+    }
 
     vector<Vertex *> source_stations_st;
     for(Vertex *v : g_st.getVertexSet()){
@@ -258,6 +269,8 @@ void max_num_trains_arrive_at_a_station_simultaneously(Graph g_st,Graph g_ap){
     cout << "\n" << total_trains << " trains can arrive to " << input_string << " station" << endl;
 }
 
+///Function that computes maximum num of trains that can travel between 2 stations with minimal cost
+///Complexity: O(VE^2)
 void max_trains_min_cost(Graph g_st, Graph g_ap){
 
     string s1,s2;
@@ -266,6 +279,15 @@ void max_trains_min_cost(Graph g_st, Graph g_ap){
     getline(cin,s1);
     cout << "\nPlease Input the name of the destination station:";
     getline(cin,s2);
+
+
+    Vertex* source_st = g_st.findVertex(Station(s1)), *source_ap = g_ap.findVertex(Station(s1));
+    Vertex* destination_st = g_st.findVertex(Station(s2)), *destination_ap = g_ap.findVertex(Station(s2));
+
+    if(destination_st == nullptr || destination_ap == nullptr || source_st == nullptr || source_ap == nullptr){
+        cout << "\nInvalid station inserted" << endl;
+        return;
+    }
 
 
     int max_trains_alfa = g_ap.maxFlow_minCost(g_ap.findVertex(Station(s1))->getId(),g_ap.findVertex(Station(s2))->getId(), "ALFA PENDULAR");
@@ -284,16 +306,16 @@ int main() {
     Graph graph_st, graph_ap;
     set<string> districts;
     set<string> municipalities;
-    int key = 1; //equals to 1 to get inside of loop
-    while(key){
+    char key = 1; //equals to 1 to get inside of loop
+    while(key != '0'){
         menuDisplay();
         cin >> key;
-        if(key == 1){
+        if(key == '1'){
             create_stations(graph_st,graph_ap, districts, municipalities);
             create_networks(graph_st,graph_ap);
             cout << "\nRailways built" << endl;
         }
-        else if(key == 2){
+        else if(key == '2'){
             string s1,s2;
             cin.ignore (std::numeric_limits<std::streamsize>::max(), '\n');
             cout << "\nPlease Input the name of the origin station:";
@@ -304,14 +326,17 @@ int main() {
             if(max_trains == 0){
                 cout << "Found no connection between this stations\n";
             }
+            else if(max_trains == -1){
+                continue;
+            }
             else{
                 cout << "Max num of trains:" << max_trains << endl;
             }
         }
-        else if(key == 3){
+        else if(key == '3'){
             max_amount_trains_capacity(graph_st,graph_ap);
         }
-        else if(key == 4){
+        else if(key == '4'){
             int key_2 = 0;
             cout << "\nWould you like to see the top k:\n" << "1-Districts\n2-Municipalities: \nSelect here:";
             cin >> key_2;
@@ -325,13 +350,22 @@ int main() {
                 cout << "Invalid option selected \n";
             }
         }
-        else if(key == 5){
+        else if(key == '5'){
             max_num_trains_arrive_at_a_station_simultaneously(graph_st,graph_ap);
         }
-        else if(key == 6){
+        else if(key == '6'){
             max_trains_min_cost(graph_st, graph_ap);
         }
+        else if(key == '7'){
 
+        }
+        else if(key == '8'){
+
+        }
+        else if(key == '0'){}
+        else{
+            cout << "\nInvalid option. Please insert a valid option." << endl;
+        }
     }
     return 0;
 }

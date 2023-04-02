@@ -78,6 +78,8 @@ bool Graph::addBidirectionalEdge(const int &sourc, const int &dest, double w, st
 Graph::~Graph() {
 }
 
+///BFS
+///Complexity: O(V+E)
 bool Graph::bfs_for_max_flow(Vertex *s, Vertex *t) {
     for(auto v : vertexSet){
         v->setVisited(false);
@@ -100,6 +102,8 @@ bool Graph::bfs_for_max_flow(Vertex *s, Vertex *t) {
     return t->isVisited();
 }
 
+///Edmond´s Karp
+///Complexity: O(VE^2)
 int Graph::maxFlow(int source, int target) {
     Vertex *s = findVertex(source);
     Vertex *t = findVertex(target);
@@ -142,6 +146,8 @@ int Graph::maxFlow(int source, int target) {
     return (int) total_flow;
 }
 
+///Modified Edmond´s Karp
+///Complexity: O(VE^2)
 int Graph::maxFlow_minCost(int source , int target, string service){
     Vertex *s = findVertex(source);
     Vertex *t = findVertex(target);
