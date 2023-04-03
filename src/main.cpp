@@ -273,8 +273,11 @@ void topk_most_affected_stations(vector<pair<string,string>> segments, vector<st
         }
     }
 
+    Graph graph_st_failure, graph_ap_failure;
+    create_stations_restricted(graph_st_failure,graph_ap_failure);
+    create_networks(graph_st_failure,graph_ap_failure);
+
     for(int i = 0; i < segments.size(); i++){
-        Graph graph_st_failure, graph_ap_failure;
 
         vector<pair<string,string>> segments_copy;
         vector<string> services_copy;
@@ -282,8 +285,28 @@ void topk_most_affected_stations(vector<pair<string,string>> segments, vector<st
         segments_copy.push_back(segments[i]);
         services_copy.push_back(services[i]);
 
-        create_stations_restricted(graph_st_failure,graph_ap_failure);
-        create_networks_restricted(graph_st_failure,graph_ap_failure,segments_copy,services_copy);
+
+        Vertex *source_seg = graph_st_failure.findVertex(Station(segments_copy[0].first));
+        Vertex *dest_seg = graph_st_failure.findVertex(Station(segments_copy[0].second));
+        double w_st = 0;
+        for(Edge *e : source_seg->getAdj()){
+            if(e->getDest() == dest_seg){
+                w_st = e->getWeight();
+            }
+        }
+        dest_seg->removeEdge(source_seg->getId());
+        source_seg->removeEdge(dest_seg->getId());
+
+        source_seg = graph_ap_failure.findVertex(Station(segments_copy[0].first));
+        dest_seg = graph_ap_failure.findVertex(Station(segments_copy[0].second));
+        double w_ap = 0;
+        for(Edge *e : source_seg->getAdj()){
+            if(e->getDest() == dest_seg){
+                w_ap = e->getWeight();
+            }
+        }
+        dest_seg->removeEdge(source_seg->getId());
+        source_seg->removeEdge(dest_seg->getId());
 
         vector<pair<int,string>> top;
         for(Vertex *v: original_st.getVertexSet()){
@@ -295,6 +318,9 @@ void topk_most_affected_stations(vector<pair<string,string>> segments, vector<st
                 top.push_back(pair);
             }
         }
+
+        graph_st_failure.addBidirectionalEdge(source_seg->getId(),dest_seg->getId(),w_st,"STANDARD");
+        graph_ap_failure.addBidirectionalEdge(source_seg->getId(),dest_seg->getId(),w_ap,"ALFA PENDULAR");
 
         sort(top.begin(),top.end());
         if(k > top.size()){
