@@ -114,7 +114,7 @@ int Graph::maxFlow(int source, int target) {
         }
     }
 
-    double total_flow = 0;
+    int total_flow = 0;
     while (bfs_for_max_flow(s, t)) {
         double path_flow = INF;
         for(auto v = t; v != s; ){
@@ -143,7 +143,7 @@ int Graph::maxFlow(int source, int target) {
         }
         total_flow += path_flow;
     }
-    return (int) total_flow;
+    return total_flow;
 }
 
 ///Modified Edmond´s Karp

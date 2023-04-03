@@ -97,9 +97,9 @@ void budgetInformation(Graph g_st,Graph g_ap, set<string> set1){
 ///Function that computes maximum num of trains that can arrive at a single station by selecting all the source stations and creating a super source to unite all of those sources. We then apply tha max flow
 ///algorithm and compute the max_flow.
 ///Complexity: O(VE^2)
-double max_num_trains_arrive_at_a_station_simultaneously(Graph g_st,Graph g_ap, Vertex *origin){
+int max_num_trains_arrive_at_a_station_simultaneously(Graph g_st,Graph g_ap, Vertex *origin){
 
-    double total_trains = 0;
+    int total_trains = 0;
 
     vector<Vertex *> source_stations_st;
     for(Vertex *v : g_st.getVertexSet()){
@@ -209,9 +209,69 @@ int max_flow_segment_failure(vector<pair<string,string>> segments, vector<string
     return max_flow;
 }
 
+///Same function as max_num_trains_arrive_at_a_station_simultaneously but with some restrictions
+///algorithm and compute the max_flow.
+///Complexity: O(VE^2)
+int max_num_trains_arrive_at_a_station_simultaneously_for_failure(Graph g_st,Graph g_ap, Vertex *origin, vector<Vertex *> source_stations_st, vector<Vertex *> source_stations_ap){
+
+    int total_trains = 0;
+
+    g_st.addVertex(-1,Station("super"));
+    g_ap.addVertex(-1,Station("super"));
+
+    for(Vertex *v : source_stations_st){
+        if(v->getId() == origin->getId()){
+            continue;
+        }
+        g_st.addEdge(-1, v->getId(), INF, "STANDARD");
+    }
+
+    for(Vertex *v : source_stations_ap){
+        if(v->getId() == origin->getId()){
+            continue;
+        }
+        g_ap.addEdge(-1, v->getId(), INF, "ALFA PENDULAR");
+    }
+
+    total_trains = g_st.maxFlow(-1,origin->getId());
+    total_trains += g_ap.maxFlow(-1,origin->getId());
+
+    Vertex *super_source = g_st.findVertex(-1);
+    for(Vertex *v : source_stations_st){
+        v->removeEdge(-1);
+        v->removeEdge(-1);
+        super_source->removeEdge(v->getId());
+        super_source->removeEdge(v->getId());
+    }
+
+    super_source = g_ap.findVertex(-1);
+    for(Vertex *v : source_stations_ap){
+        v->removeEdge(-1);
+        v->removeEdge(-1);
+        super_source->removeEdge(v->getId());
+        super_source->removeEdge(v->getId());
+    }
+
+    return total_trains;
+}
+
 ///Function that computes the top-k most affected stations caused by a segment failure
 ///Complexity: O(nV^2E^2)
 void topk_most_affected_stations(vector<pair<string,string>> segments, vector<string> services, Graph original_st, Graph original_ap, int k){
+
+    vector<Vertex *> source_stations_st;
+    for(Vertex *v : original_st.getVertexSet()){
+        if(v->getAdj().size() == 1){
+            source_stations_st.push_back(v);
+        }
+    }
+
+    vector<Vertex *> source_stations_ap;
+    for(Vertex *v : original_ap.getVertexSet()){
+        if(v->getAdj().size() == 1){
+            source_stations_ap.push_back(v);
+        }
+    }
 
     for(int i = 0; i < segments.size(); i++){
         Graph graph_st_failure, graph_ap_failure;
@@ -225,13 +285,13 @@ void topk_most_affected_stations(vector<pair<string,string>> segments, vector<st
         create_stations_restricted(graph_st_failure,graph_ap_failure);
         create_networks_restricted(graph_st_failure,graph_ap_failure,segments_copy,services_copy);
 
-        vector<pair<double,string>> top;
-        for(Vertex *v : original_st.getVertexSet()){
-            double original_arrivals = max_num_trains_arrive_at_a_station_simultaneously(original_st,original_ap,v);
-            double failure_arrivals = max_num_trains_arrive_at_a_station_simultaneously(graph_st_failure,graph_ap_failure,v);
+        vector<pair<int,string>> top;
+        for(Vertex *v: original_st.getVertexSet()){
+            int original_arrivals = max_num_trains_arrive_at_a_station_simultaneously(original_st,original_ap,v);
+            int failure_arrivals = max_num_trains_arrive_at_a_station_simultaneously_for_failure(graph_st_failure,graph_ap_failure,v,source_stations_st,source_stations_ap);
 
             if(failure_arrivals < original_arrivals){
-                pair<double,string> pair(original_arrivals-failure_arrivals,v->getStation().name);
+                pair<int,string> pair(original_arrivals-failure_arrivals,v->getStation().name);
                 top.push_back(pair);
             }
         }
@@ -241,8 +301,8 @@ void topk_most_affected_stations(vector<pair<string,string>> segments, vector<st
             k = top.size();
         }
         cout << "\nSegment: " << segments[i].first << " - " << segments[i].second << " using " << services[i] << " service:" << endl;
-        for(int i = 0; i < k; i++){
-            cout << top[i].second << " station lost " << top[i].first << " capacity" << endl;
+        for(int j = k-1; j >= 0; j--){
+            cout << top[j].second << " station lost " << top[j].first << " capacity" << endl;
         }
     }
 
