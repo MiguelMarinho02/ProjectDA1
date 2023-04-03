@@ -2,9 +2,8 @@
 #include "Station.h"
 #include "Graph.h"
 #include "VertexEdge.h"
-#include <fstream>
-#include <sstream>
 #include <set>
+#include "file_reader.h"
 
 using namespace std;
 
@@ -24,111 +23,6 @@ void menuDisplay() {
     cout << "8) In segment failure, get most affected stations \n";
     cout << "0) Exit\n";
     cout << "Option:";
-}
-
-
-///Function that builds the graph's nodes
-///Complexity: O(N^2)
-void create_stations(Graph &g_st, Graph &g_ap, set<string> &d, set<string> &m){
-    ifstream file("../files/stations.csv");
-    string string1;
-    string name, district ,municipality ,township ,line;
-    bool first_it = true;
-    int count = 0;
-    while(getline(file,string1)){
-        if(first_it){
-            first_it = false;
-            continue;
-        }
-        istringstream ss(string1);
-        getline(ss,name,',');
-        getline(ss,district,',');
-        getline(ss,municipality,',');
-        if(municipality[0] == '"'){
-            string rest;
-            getline(ss,rest,'"');
-            municipality += rest;
-            municipality = municipality.substr(1,municipality.size()-1);
-            getline(ss,rest,',');
-        }
-        getline(ss,township,',');
-        if(township[0] == '"'){
-            string rest;
-            getline(ss,rest,'"');
-            township += rest;
-            township = township.substr(1, township.size()-1);
-            getline(ss,rest,',');
-        }
-        getline(ss,line,',');
-        d.insert(district);
-        m.insert(municipality);
-        Station station(name,district,municipality,township,line);
-        if(g_st.findVertex(station) != nullptr){
-            continue;
-        }
-        g_st.addVertex(count,station);
-        g_ap.addVertex(count,station);
-        count++;
-    }
-}
-///Function that builds the edges and avoids repetitions
-///Complexity: O(N^2)
-void create_networks(Graph &g_st,Graph &g_ap){
-
-    ifstream file("../files/network.csv");
-
-    string line, station_A,station_B,capacity,service;
-    bool first_it = true;
-
-    while(getline(file, line)){
-        stringstream ss(line);
-
-        getline(ss, station_A, ',');
-        getline(ss, station_B, ',');
-        getline(ss, capacity, ',');
-        getline(ss, service, ',');
-
-        if(first_it == true){
-            first_it = false;
-            continue;
-        }
-
-        if(service == "STANDARD") { //creates edges for standard service
-            Vertex *v1 = g_st.findVertex(Station(station_A));
-            Vertex *v2 = g_st.findVertex(Station(station_B));
-            bool edge_exists = false;
-            for (auto e: v1->getAdj()) {
-                if (e->getDest()->getName() == v2->getName() && e->getService() == service) {
-                    edge_exists = true;
-                    break;
-                }
-            }
-
-            if (edge_exists) {
-                continue;
-            }
-
-            g_st.addBidirectionalEdge(v1->getId(), v2->getId(), stoi(capacity), service);
-        }
-        else if(service == "ALFA PENDULAR"){ //creates edges for alfa pendular service
-            Vertex *v1 = g_ap.findVertex(Station(station_A));
-            Vertex *v2 = g_ap.findVertex(Station(station_B));
-            bool edge_exists = false;
-            for (auto e: v1->getAdj()) {
-                if (e->getDest()->getName() == v2->getName() && e->getService() == service) {
-                    edge_exists = true;
-                    break;
-                }
-            }
-
-            if (edge_exists) {
-                continue;
-            }
-
-            g_ap.addBidirectionalEdge(v1->getId(), v2->getId(), stoi(capacity), service);
-        }
-    }
-
 }
 
 ///Function that computes maximum num of trains between 2 given stations
@@ -301,6 +195,29 @@ void max_trains_min_cost(Graph g_st, Graph g_ap){
     }
 }
 
+///Function that computes maximum num of trains that can travel between 2 stations in a restricted graph
+///Complexity: O(VE^2)
+int max_flow_segment_failure(vector<pair<string,string>> segments, vector<string> services, string source, string destination){
+    Graph graph_st_failure, graph_ap_failure;
+
+
+    create_stations_restricted(graph_st_failure,graph_ap_failure);
+    create_networks_restricted(graph_st_failure,graph_ap_failure,segments,services);
+
+    Vertex* source_st = graph_st_failure.findVertex(Station(source)), *source_ap = graph_ap_failure.findVertex(Station(source));
+    Vertex* destination_st = graph_st_failure.findVertex(Station(destination)), *destination_ap = graph_ap_failure.findVertex(Station(destination));
+
+    if(destination_st == nullptr || destination_ap == nullptr || source_st == nullptr || source_ap == nullptr){
+        cout << "\nInvalid station inserted" << endl;
+        return -1;
+    }
+
+    int max_flow = graph_st_failure.maxFlow(source_st->getId(),destination_st->getId());
+    max_flow += graph_ap_failure.maxFlow(source_ap->getId(),destination_ap->getId());
+
+    return max_flow;
+}
+
 int main() {
     cout << "Please build the graph before selecting the other options\n";
     Graph graph_st, graph_ap;
@@ -357,10 +274,55 @@ int main() {
             max_trains_min_cost(graph_st, graph_ap);
         }
         else if(key == '7'){
+            string s1,s2;
+            cin.ignore (std::numeric_limits<std::streamsize>::max(), '\n');
+            cout << "\nPlease Input the name of the origin station:";
+            getline(cin,s1);
+            cout << "\nPlease Input the name of the destination station:";
+            getline(cin,s2);
 
+            bool more_segments = true;
+            vector<pair<string,string>> segments;
+            vector<string> services;
+            while(more_segments){
+                string s_origin, s_dest, service;
+                cout << "\nPlease Input the name of the origin station of the segment:";
+                getline(cin,s_origin);
+                cout << "\nPlease Input the name of the destination station of the segment:";
+                getline(cin,s_dest);
+                cout << "\nPlease Input service of the segment:";
+                getline(cin,service);
+
+                pair<string,string> pair(s_origin,s_dest);
+                segments.push_back(pair);
+                services.push_back(service);
+
+                char option;
+                cout << "\nDo you wish to add more segments?\n1->Yes\nPress anything->No\nOption:";
+                cin >> option;
+                if(option == '1'){
+                    cin.ignore (std::numeric_limits<std::streamsize>::max(), '\n');
+                    continue;
+                }
+                else{
+                    more_segments = false;
+                }
+
+            }
+
+            int max_trains = max_flow_segment_failure(segments,services,s1,s2);
+            if(max_trains == 0){
+                cout << "Found no connection between this stations\n";
+            }
+            else if(max_trains == -1){
+                continue;
+            }
+            else{
+                cout << "Max num of trains:" << max_trains << endl;
+            }
         }
         else if(key == '8'){
-
+            
         }
         else if(key == '0'){}
         else{
