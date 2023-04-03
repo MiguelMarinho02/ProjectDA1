@@ -97,18 +97,9 @@ void budgetInformation(Graph g_st,Graph g_ap, set<string> set1){
 ///Function that computes maximum num of trains that can arrive at a single station by selecting all the source stations and creating a super source to unite all of those sources. We then apply tha max flow
 ///algorithm and compute the max_flow.
 ///Complexity: O(VE^2)
-void max_num_trains_arrive_at_a_station_simultaneously(Graph g_st,Graph g_ap){
-    string input_string;
-    cin.ignore (std::numeric_limits<std::streamsize>::max(), '\n');
-    cout << "\nPlease Input the name of the origin station:";
-    getline(cin,input_string);
+double max_num_trains_arrive_at_a_station_simultaneously(Graph g_st,Graph g_ap, Vertex *origin){
 
     double total_trains = 0;
-    Vertex *origin = g_st.findVertex(Station(input_string));
-    if(origin == nullptr){
-        cout << "\n" << "Could not find the given station" << endl;
-        return;
-    }
 
     vector<Vertex *> source_stations_st;
     for(Vertex *v : g_st.getVertexSet()){
@@ -141,8 +132,8 @@ void max_num_trains_arrive_at_a_station_simultaneously(Graph g_st,Graph g_ap){
         g_ap.addEdge(-1, v->getId(), INF, "ALFA PENDULAR");
     }
 
-    total_trains = g_st.maxFlow(-1,g_st.findVertex(Station(input_string))->getId());
-    total_trains += g_ap.maxFlow(-1,g_ap.findVertex(Station(input_string))->getId());
+    total_trains = g_st.maxFlow(-1,origin->getId());
+    total_trains += g_ap.maxFlow(-1,origin->getId());
 
     Vertex *super_source = g_st.findVertex(-1);
     for(Vertex *v : source_stations_st){
@@ -160,7 +151,7 @@ void max_num_trains_arrive_at_a_station_simultaneously(Graph g_st,Graph g_ap){
         super_source->removeEdge(v->getId());
     }
 
-    cout << "\n" << total_trains << " trains can arrive to " << input_string << " station" << endl;
+    return total_trains;
 }
 
 ///Function that computes maximum num of trains that can travel between 2 stations with minimal cost
@@ -218,6 +209,45 @@ int max_flow_segment_failure(vector<pair<string,string>> segments, vector<string
     return max_flow;
 }
 
+///Function that computes the top-k most affected stations caused by a segment failure
+///Complexity: O(nV^2E^2)
+void topk_most_affected_stations(vector<pair<string,string>> segments, vector<string> services, Graph original_st, Graph original_ap, int k){
+
+    for(int i = 0; i < segments.size(); i++){
+        Graph graph_st_failure, graph_ap_failure;
+
+        vector<pair<string,string>> segments_copy;
+        vector<string> services_copy;
+
+        segments_copy.push_back(segments[i]);
+        services_copy.push_back(services[i]);
+
+        create_stations_restricted(graph_st_failure,graph_ap_failure);
+        create_networks_restricted(graph_st_failure,graph_ap_failure,segments_copy,services_copy);
+
+        vector<pair<double,string>> top;
+        for(Vertex *v : original_st.getVertexSet()){
+            double original_arrivals = max_num_trains_arrive_at_a_station_simultaneously(original_st,original_ap,v);
+            double failure_arrivals = max_num_trains_arrive_at_a_station_simultaneously(graph_st_failure,graph_ap_failure,v);
+
+            if(failure_arrivals < original_arrivals){
+                pair<double,string> pair(original_arrivals-failure_arrivals,v->getStation().name);
+                top.push_back(pair);
+            }
+        }
+
+        sort(top.begin(),top.end());
+        if(k > top.size()){
+            k = top.size();
+        }
+        cout << "\nSegment: " << segments[i].first << " - " << segments[i].second << " using " << services[i] << " service:" << endl;
+        for(int i = 0; i < k; i++){
+            cout << top[i].second << " station lost " << top[i].first << " capacity" << endl;
+        }
+    }
+
+}
+
 int main() {
     cout << "Please build the graph before selecting the other options\n";
     Graph graph_st, graph_ap;
@@ -268,7 +298,17 @@ int main() {
             }
         }
         else if(key == '5'){
-            max_num_trains_arrive_at_a_station_simultaneously(graph_st,graph_ap);
+            string input_string;
+            cin.ignore (std::numeric_limits<std::streamsize>::max(), '\n');
+            cout << "\nPlease Input the name of the origin station:";
+            getline(cin,input_string);
+
+            Vertex *origin = graph_st.findVertex(Station(input_string));
+            if(origin == nullptr){
+                cout << "\n" << "Could not find the given station" << endl;
+            }
+            double total_trains = max_num_trains_arrive_at_a_station_simultaneously(graph_st,graph_ap, origin);
+            cout << "\n" << total_trains << " trains can arrive to " << input_string << " station" << endl;
         }
         else if(key == '6'){
             max_trains_min_cost(graph_st, graph_ap);
@@ -322,7 +362,37 @@ int main() {
             }
         }
         else if(key == '8'){
-            
+            string k;
+            cin.ignore (std::numeric_limits<std::streamsize>::max(), '\n');
+            cout << "\nPlease input the number of affected stations you wish to see (TOP-K):";
+            getline(cin,k);
+            bool more_segments = true;
+            vector<pair<string,string>> segments;
+            vector<string> services;
+            while(more_segments) {
+                string s_origin, s_dest, service;
+                cout << "\nPlease Input the name of the origin station of the segment:";
+                getline(cin, s_origin);
+                cout << "\nPlease Input the name of the destination station of the segment:";
+                getline(cin, s_dest);
+                cout << "\nPlease Input service of the segment:";
+                getline(cin, service);
+
+                pair<string, string> pair(s_origin, s_dest);
+                segments.push_back(pair);
+                services.push_back(service);
+
+                char option;
+                cout << "\nDo you wish to add more segments?\n1->Yes\nPress anything->No\nOption:";
+                cin >> option;
+                if (option == '1') {
+                    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    continue;
+                } else {
+                    more_segments = false;
+                }
+            }
+            topk_most_affected_stations(segments,services,graph_st,graph_ap,stoi(k));
         }
         else if(key == '0'){}
         else{
