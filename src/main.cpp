@@ -76,10 +76,67 @@ void max_amount_trains_capacity(Graph g_st, Graph g_ap){
     }
 
 }
+
+///Same as version 1, but does not include sources from same district/mun
+///algorithm and compute the max_flow.
+///Complexity: O(VE^2)
+int max_num_trains_arrive_at_a_station_simultaneously_2(Graph g_st,Graph g_ap, Vertex *origin, string avoid_this, bool isDistrict){
+
+    int total_trains = 0;
+
+    vector<Vertex *> source_stations_st;
+    for(Vertex *v : g_st.getVertexSet()){
+        if(v->getId() == origin->getId() || (v->getStation().municipality == avoid_this && !isDistrict) || (v->getStation().district == avoid_this && isDistrict)){
+            continue;
+        }
+        if(v->getAdj().size() == 1){
+            source_stations_st.push_back(v);
+        }
+    }
+
+    vector<Vertex *> source_stations_ap;
+    for(Vertex *v : g_ap.getVertexSet()){
+        if(v->getId() == origin->getId() || (v->getStation().municipality == avoid_this && !isDistrict) || (v->getStation().district == avoid_this && isDistrict)){
+            continue;
+        }
+        if(v->getAdj().size() == 1){
+            source_stations_ap.push_back(v);
+        }
+    }
+
+    g_st.addVertex(-1,Station("super"));
+    g_ap.addVertex(-1,Station("super"));
+
+    for(Vertex *v : source_stations_st){
+        g_st.addEdge(-1, v->getId(), INF, "STANDARD");
+    }
+
+    for(Vertex *v : source_stations_ap){
+        g_ap.addEdge(-1, v->getId(), INF, "ALFA PENDULAR");
+    }
+
+    total_trains = g_st.maxFlow(-1,origin->getId());
+    total_trains += g_ap.maxFlow(-1,origin->getId());
+
+    Vertex *super_source = g_st.findVertex(-1);
+    for(Vertex *v : source_stations_st){
+        v->removeEdge(-1);
+        super_source->removeEdge(v->getId());
+    }
+
+    super_source = g_ap.findVertex(-1);
+    for(Vertex *v : source_stations_ap){
+        v->removeEdge(-1);
+        super_source->removeEdge(v->getId());
+    }
+
+    return total_trains;
+}
+
 ///Function that shows where management should assign larger budgets for the purchasing and maintenance of trains
 ///Complexity: O(nVE^2)
-void budgetInformation(Graph g_st,Graph g_ap, set<string> set1){
-    vector<pair<string,int>> top;
+void budgetInformation(Graph g_st,Graph g_ap, set<string> set1, bool isDist){
+    vector<pair<int,string>> top;
     int min = set1.size() - 1;
 
     cout << "\n" << "Introduce here the number of the top k:";
@@ -89,8 +146,83 @@ void budgetInformation(Graph g_st,Graph g_ap, set<string> set1){
         k = min;
     }
 
-    for(string s : set1){
-        //this should build a subgraph with only the districts/mun from the set and then calculate the max
+    if(isDist){
+        for(string s : set1){
+            if(s == ""){
+                continue;
+            }
+            vector<Vertex *> stations_inside_st;
+            vector<Vertex *> stations_inside_ap;
+            for(int i = 0; i < g_st.getNumVertex(); i++){
+                if(g_st.getVertexSet()[i]->getStation().district == s){
+                    stations_inside_st.push_back(g_st.getVertexSet()[i]);
+                    stations_inside_ap.push_back(g_ap.getVertexSet()[i]);
+                }
+            }
+            g_st.addVertex(-2,Station("SS"));
+            g_ap.addVertex(-2,Station("SS"));
+            for(int i = 0; i < stations_inside_ap.size(); i++){
+                g_ap.addEdge(stations_inside_ap[i]->getId(),-2,INF,"ALFA PENDULAR");
+            }
+            for(int i = 0; i < stations_inside_st.size(); i++){
+                g_st.addEdge(stations_inside_st[i]->getId(),-2,INF,"STANDARD");
+            }
+            Vertex vertex(-2,Station("SS"));
+            int total = max_num_trains_arrive_at_a_station_simultaneously_2(g_st,g_ap,&vertex,s,isDist);
+            pair<int,string> p(total,s);
+            top.push_back(p);
+            for(int i = 0; i < stations_inside_ap.size(); i++){
+                stations_inside_ap[i]->removeEdge(-2);
+            }
+            for(int i = 0; i < stations_inside_st.size(); i++){
+                stations_inside_st[i]->removeEdge(-2);
+            }
+        }
+        cout << "\nTop Districts:" << endl;
+    }
+    else{
+        for(string s : set1){
+            if(s == ""){
+                continue;
+            }
+            vector<Vertex *> stations_inside_st;
+            vector<Vertex *> stations_inside_ap;
+            for(int i = 0; i < g_st.getNumVertex(); i++){
+                if(g_st.getVertexSet()[i]->getStation().municipality == s){
+                    stations_inside_st.push_back(g_st.getVertexSet()[i]);
+                    stations_inside_ap.push_back(g_ap.getVertexSet()[i]);
+                }
+            }
+            g_st.addVertex(-2,Station("SS"));
+            g_ap.addVertex(-2,Station("SS"));
+            for(int i = 0; i < stations_inside_ap.size(); i++){
+                g_ap.addEdge(stations_inside_ap[i]->getId(),-2,INF,"ALFA PENDULAR");
+            }
+            for(int i = 0; i < stations_inside_st.size(); i++){
+                g_st.addEdge(stations_inside_st[i]->getId(),-2,INF,"STANDARD");
+            }
+            for(int i = 0; i < g_st.getNumVertex(); i++){
+                stations_inside_st.push_back(g_st.getVertexSet()[i]);
+                stations_inside_ap.push_back(g_ap.getVertexSet()[i]);
+            }
+            Vertex vertex(-2,Station("SS"));
+            int total = max_num_trains_arrive_at_a_station_simultaneously_2(g_st,g_ap,&vertex,s,isDist);
+            pair<int,string> p(total,s);
+            top.push_back(p);
+            for(int i = 0; i < stations_inside_ap.size(); i++){
+                stations_inside_ap[i]->removeEdge(-2);
+            }
+            for(int i = 0; i < stations_inside_st.size(); i++){
+                stations_inside_st[i]->removeEdge(-2);
+            }
+
+        }
+        cout << "\nTop Municipalities:" << endl;
+    }
+    sort(top.begin(),top.end());
+    std::reverse(top.begin(), top.end());
+    for(int i = 0; i < k; i++){
+        cout << top[i].second << " --- " << top[i].first << endl;
     }
 }
 
@@ -323,11 +455,12 @@ void topk_most_affected_stations(vector<pair<string,string>> segments, vector<st
         graph_ap_failure.addBidirectionalEdge(source_seg->getId(),dest_seg->getId(),w_ap,"ALFA PENDULAR");
 
         sort(top.begin(),top.end());
+        std::reverse(top.begin(), top.end());
         if(k > top.size()){
             k = top.size();
         }
         cout << "\nSegment: " << segments[i].first << " - " << segments[i].second << " using " << services[i] << " service:" << endl;
-        for(int j = k-1; j >= 0; j--){
+        for(int j = 0; j < k; j++){
             cout << top[j].second << " station lost " << top[j].first << " capacity" << endl;
         }
     }
@@ -374,10 +507,10 @@ int main() {
             cout << "\nWould you like to see the top k:\n" << "1-Districts\n2-Municipalities: \nSelect here:";
             cin >> key_2;
             if(key_2 == 1){
-                budgetInformation(graph_st, graph_ap, districts);
+                budgetInformation(graph_st, graph_ap, districts,true);
             }
             else if(key_2 == 2){
-                budgetInformation(graph_st, graph_ap, municipalities);
+                budgetInformation(graph_st, graph_ap, municipalities,false);
             }
             else{
                 cout << "Invalid option selected \n";
