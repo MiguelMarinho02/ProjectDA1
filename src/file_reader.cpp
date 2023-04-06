@@ -67,7 +67,7 @@ void create_networks(Graph &g_st,Graph &g_ap){
             continue;
         }
 
-        if(service == "STANDARD") { //creates edges for standard service
+        if(service == "STANDARD" || service == "STANDARD\r") { //creates edges for standard service
             Vertex *v1 = g_st.findVertex(Station(station_A));
             Vertex *v2 = g_st.findVertex(Station(station_B));
             bool edge_exists = false;
@@ -84,7 +84,7 @@ void create_networks(Graph &g_st,Graph &g_ap){
 
             g_st.addBidirectionalEdge(v1->getId(), v2->getId(), stoi(capacity), service);
         }
-        else if(service == "ALFA PENDULAR"){ //creates edges for alfa pendular service
+        else if(service == "ALFA PENDULAR" || service == "ALFA PENDULAR\r"){ //creates edges for alfa pendular service
             Vertex *v1 = g_ap.findVertex(Station(station_A));
             Vertex *v2 = g_ap.findVertex(Station(station_B));
             bool edge_exists = false;
@@ -181,7 +181,7 @@ void create_networks_restricted(Graph &g_st,Graph &g_ap,vector<pair<string,strin
             continue;
         }
 
-        if(service == "STANDARD") { //creates edges for standard service
+        if(service == "STANDARD" || service == "STANDARD\r") { //creates edges for standard service
             Vertex *v1 = g_st.findVertex(Station(station_A));
             Vertex *v2 = g_st.findVertex(Station(station_B));
             bool edge_exists = false;
@@ -198,7 +198,7 @@ void create_networks_restricted(Graph &g_st,Graph &g_ap,vector<pair<string,strin
 
             g_st.addBidirectionalEdge(v1->getId(), v2->getId(), stoi(capacity), service);
         }
-        else if(service == "ALFA PENDULAR"){ //creates edges for alfa pendular service
+        else if(service == "ALFA PENDULAR" || service == "ALFA PENDULAR\r"){ //creates edges for alfa pendular service
             Vertex *v1 = g_ap.findVertex(Station(station_A));
             Vertex *v2 = g_ap.findVertex(Station(station_B));
             bool edge_exists = false;
