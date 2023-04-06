@@ -1,0 +1,103 @@
+\hypertarget{main_8cpp}{}\doxysection{C\+:/\+Users/kensh/\+One\+Drive/\+Ambiente de Trabalho/\+Pasta/\+DA/\+Project\+DA1/src/main.cpp File Reference}
+\label{main_8cpp}\index{C:/Users/kensh/OneDrive/Ambiente de Trabalho/Pasta/DA/ProjectDA1/src/main.cpp@{C:/Users/kensh/OneDrive/Ambiente de Trabalho/Pasta/DA/ProjectDA1/src/main.cpp}}
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include \char`\"{}Station.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Graph.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Vertex\+Edge.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$set$>$}\newline
+{\ttfamily \#include \char`\"{}file\+\_\+reader.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{main_8cpp_ad6a29cfb81319542772fb4642c64dba5}{menu\+Display}} ()
+\item 
+int \mbox{\hyperlink{main_8cpp_a74cb257a4ec77189eb0af4eda7e5db6d}{max\+\_\+num\+\_\+trains\+\_\+two\+\_\+stations}} (\mbox{\hyperlink{class_graph}{Graph}} g\+\_\+st, \mbox{\hyperlink{class_graph}{Graph}} g\+\_\+ap, string s1, string s2)
+\item 
+void \mbox{\hyperlink{main_8cpp_a148eb004e97d6c4ad363265ebf025a1d}{max\+\_\+amount\+\_\+trains\+\_\+capacity}} (\mbox{\hyperlink{class_graph}{Graph}} g\+\_\+st, \mbox{\hyperlink{class_graph}{Graph}} g\+\_\+ap)
+\item 
+int \mbox{\hyperlink{main_8cpp_a8cb1b20db190dfd51814787c15d8726d}{max\+\_\+num\+\_\+trains\+\_\+arrive\+\_\+at\+\_\+a\+\_\+station\+\_\+simultaneously\+\_\+2}} (\mbox{\hyperlink{class_graph}{Graph}} g\+\_\+st, \mbox{\hyperlink{class_graph}{Graph}} g\+\_\+ap, \mbox{\hyperlink{class_vertex}{Vertex}} $\ast$origin, string avoid\+\_\+this, bool is\+District)
+\item 
+void \mbox{\hyperlink{main_8cpp_aea5eb2b97dbbdc94077f8edfc6a0ca88}{budget\+Information}} (\mbox{\hyperlink{class_graph}{Graph}} g\+\_\+st, \mbox{\hyperlink{class_graph}{Graph}} g\+\_\+ap, set$<$ string $>$ set1, bool is\+Dist)
+\item 
+int \mbox{\hyperlink{main_8cpp_af507ef6d4ced0d7732908857a7ea0f58}{max\+\_\+num\+\_\+trains\+\_\+arrive\+\_\+at\+\_\+a\+\_\+station\+\_\+simultaneously}} (\mbox{\hyperlink{class_graph}{Graph}} g\+\_\+st, \mbox{\hyperlink{class_graph}{Graph}} g\+\_\+ap, \mbox{\hyperlink{class_vertex}{Vertex}} $\ast$origin)
+\item 
+void \mbox{\hyperlink{main_8cpp_a747715cdd57c0a3bdae90d55b4f36627}{max\+\_\+trains\+\_\+min\+\_\+cost}} (\mbox{\hyperlink{class_graph}{Graph}} g\+\_\+st, \mbox{\hyperlink{class_graph}{Graph}} g\+\_\+ap)
+\item 
+int \mbox{\hyperlink{main_8cpp_aea4d790c969796b2d04ff1a261500155}{max\+\_\+flow\+\_\+segment\+\_\+failure}} (vector$<$ pair$<$ string, string $>$ $>$ segments, vector$<$ string $>$ services, string source, string destination)
+\item 
+int \mbox{\hyperlink{main_8cpp_af2a2940fc2065f8998626f3e52ec3183}{max\+\_\+num\+\_\+trains\+\_\+arrive\+\_\+at\+\_\+a\+\_\+station\+\_\+simultaneously\+\_\+for\+\_\+failure}} (\mbox{\hyperlink{class_graph}{Graph}} g\+\_\+st, \mbox{\hyperlink{class_graph}{Graph}} g\+\_\+ap, \mbox{\hyperlink{class_vertex}{Vertex}} $\ast$origin, vector$<$ \mbox{\hyperlink{class_vertex}{Vertex}} $\ast$ $>$ source\+\_\+stations\+\_\+st, vector$<$ \mbox{\hyperlink{class_vertex}{Vertex}} $\ast$ $>$ source\+\_\+stations\+\_\+ap)
+\item 
+void \mbox{\hyperlink{main_8cpp_af3cf69e538bf909f69a01090c338cbd8}{topk\+\_\+most\+\_\+affected\+\_\+stations}} (vector$<$ pair$<$ string, string $>$ $>$ segments, vector$<$ string $>$ services, \mbox{\hyperlink{class_graph}{Graph}} original\+\_\+st, \mbox{\hyperlink{class_graph}{Graph}} original\+\_\+ap, int k)
+\item 
+int \mbox{\hyperlink{main_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{main_8cpp_aea5eb2b97dbbdc94077f8edfc6a0ca88}\label{main_8cpp_aea5eb2b97dbbdc94077f8edfc6a0ca88}} 
+\index{main.cpp@{main.cpp}!budgetInformation@{budgetInformation}}
+\index{budgetInformation@{budgetInformation}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{budgetInformation()}{budgetInformation()}}
+{\footnotesize\ttfamily void budget\+Information (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_graph}{Graph}}}]{g\+\_\+st,  }\item[{\mbox{\hyperlink{class_graph}{Graph}}}]{g\+\_\+ap,  }\item[{set$<$ string $>$}]{set1,  }\item[{bool}]{is\+Dist }\end{DoxyParamCaption})}
+
+Function that shows where management should assign larger budgets for the purchasing and maintenance of trains Complexity\+: O(n\+VE$^\wedge$2) \mbox{\Hypertarget{main_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}\label{main_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}} 
+\index{main.cpp@{main.cpp}!main@{main}}
+\index{main@{main}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{main_8cpp_a148eb004e97d6c4ad363265ebf025a1d}\label{main_8cpp_a148eb004e97d6c4ad363265ebf025a1d}} 
+\index{main.cpp@{main.cpp}!max\_amount\_trains\_capacity@{max\_amount\_trains\_capacity}}
+\index{max\_amount\_trains\_capacity@{max\_amount\_trains\_capacity}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{max\_amount\_trains\_capacity()}{max\_amount\_trains\_capacity()}}
+{\footnotesize\ttfamily void max\+\_\+amount\+\_\+trains\+\_\+capacity (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_graph}{Graph}}}]{g\+\_\+st,  }\item[{\mbox{\hyperlink{class_graph}{Graph}}}]{g\+\_\+ap }\end{DoxyParamCaption})}
+
+Function that computes maximum num of trains between all pairs of stations Complexity\+: O(\+V$^\wedge$3\+E$^\wedge$2) \mbox{\Hypertarget{main_8cpp_aea4d790c969796b2d04ff1a261500155}\label{main_8cpp_aea4d790c969796b2d04ff1a261500155}} 
+\index{main.cpp@{main.cpp}!max\_flow\_segment\_failure@{max\_flow\_segment\_failure}}
+\index{max\_flow\_segment\_failure@{max\_flow\_segment\_failure}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{max\_flow\_segment\_failure()}{max\_flow\_segment\_failure()}}
+{\footnotesize\ttfamily int max\+\_\+flow\+\_\+segment\+\_\+failure (\begin{DoxyParamCaption}\item[{vector$<$ pair$<$ string, string $>$ $>$}]{segments,  }\item[{vector$<$ string $>$}]{services,  }\item[{string}]{source,  }\item[{string}]{destination }\end{DoxyParamCaption})}
+
+Function that computes maximum num of trains that can travel between 2 stations in a restricted graph Complexity\+: O(\+VE$^\wedge$2) \mbox{\Hypertarget{main_8cpp_af507ef6d4ced0d7732908857a7ea0f58}\label{main_8cpp_af507ef6d4ced0d7732908857a7ea0f58}} 
+\index{main.cpp@{main.cpp}!max\_num\_trains\_arrive\_at\_a\_station\_simultaneously@{max\_num\_trains\_arrive\_at\_a\_station\_simultaneously}}
+\index{max\_num\_trains\_arrive\_at\_a\_station\_simultaneously@{max\_num\_trains\_arrive\_at\_a\_station\_simultaneously}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{max\_num\_trains\_arrive\_at\_a\_station\_simultaneously()}{max\_num\_trains\_arrive\_at\_a\_station\_simultaneously()}}
+{\footnotesize\ttfamily int max\+\_\+num\+\_\+trains\+\_\+arrive\+\_\+at\+\_\+a\+\_\+station\+\_\+simultaneously (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_graph}{Graph}}}]{g\+\_\+st,  }\item[{\mbox{\hyperlink{class_graph}{Graph}}}]{g\+\_\+ap,  }\item[{\mbox{\hyperlink{class_vertex}{Vertex}} $\ast$}]{origin }\end{DoxyParamCaption})}
+
+Function that computes maximum num of trains that can arrive at a single station by selecting all the source stations and creating a super source to unite all of those sources. We then apply tha max flow algorithm and compute the max\+\_\+flow. Complexity\+: O(\+VE$^\wedge$2) \mbox{\Hypertarget{main_8cpp_a8cb1b20db190dfd51814787c15d8726d}\label{main_8cpp_a8cb1b20db190dfd51814787c15d8726d}} 
+\index{main.cpp@{main.cpp}!max\_num\_trains\_arrive\_at\_a\_station\_simultaneously\_2@{max\_num\_trains\_arrive\_at\_a\_station\_simultaneously\_2}}
+\index{max\_num\_trains\_arrive\_at\_a\_station\_simultaneously\_2@{max\_num\_trains\_arrive\_at\_a\_station\_simultaneously\_2}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{max\_num\_trains\_arrive\_at\_a\_station\_simultaneously\_2()}{max\_num\_trains\_arrive\_at\_a\_station\_simultaneously\_2()}}
+{\footnotesize\ttfamily int max\+\_\+num\+\_\+trains\+\_\+arrive\+\_\+at\+\_\+a\+\_\+station\+\_\+simultaneously\+\_\+2 (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_graph}{Graph}}}]{g\+\_\+st,  }\item[{\mbox{\hyperlink{class_graph}{Graph}}}]{g\+\_\+ap,  }\item[{\mbox{\hyperlink{class_vertex}{Vertex}} $\ast$}]{origin,  }\item[{string}]{avoid\+\_\+this,  }\item[{bool}]{is\+District }\end{DoxyParamCaption})}
+
+Same as version 1, but does not include sources from same district/mun algorithm and compute the max\+\_\+flow. Complexity\+: O(\+VE$^\wedge$2) \mbox{\Hypertarget{main_8cpp_af2a2940fc2065f8998626f3e52ec3183}\label{main_8cpp_af2a2940fc2065f8998626f3e52ec3183}} 
+\index{main.cpp@{main.cpp}!max\_num\_trains\_arrive\_at\_a\_station\_simultaneously\_for\_failure@{max\_num\_trains\_arrive\_at\_a\_station\_simultaneously\_for\_failure}}
+\index{max\_num\_trains\_arrive\_at\_a\_station\_simultaneously\_for\_failure@{max\_num\_trains\_arrive\_at\_a\_station\_simultaneously\_for\_failure}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{max\_num\_trains\_arrive\_at\_a\_station\_simultaneously\_for\_failure()}{max\_num\_trains\_arrive\_at\_a\_station\_simultaneously\_for\_failure()}}
+{\footnotesize\ttfamily int max\+\_\+num\+\_\+trains\+\_\+arrive\+\_\+at\+\_\+a\+\_\+station\+\_\+simultaneously\+\_\+for\+\_\+failure (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_graph}{Graph}}}]{g\+\_\+st,  }\item[{\mbox{\hyperlink{class_graph}{Graph}}}]{g\+\_\+ap,  }\item[{\mbox{\hyperlink{class_vertex}{Vertex}} $\ast$}]{origin,  }\item[{vector$<$ \mbox{\hyperlink{class_vertex}{Vertex}} $\ast$ $>$}]{source\+\_\+stations\+\_\+st,  }\item[{vector$<$ \mbox{\hyperlink{class_vertex}{Vertex}} $\ast$ $>$}]{source\+\_\+stations\+\_\+ap }\end{DoxyParamCaption})}
+
+Same function as max\+\_\+num\+\_\+trains\+\_\+arrive\+\_\+at\+\_\+a\+\_\+station\+\_\+simultaneously but with some restrictions algorithm and compute the max\+\_\+flow. Complexity\+: O(\+VE$^\wedge$2) \mbox{\Hypertarget{main_8cpp_a74cb257a4ec77189eb0af4eda7e5db6d}\label{main_8cpp_a74cb257a4ec77189eb0af4eda7e5db6d}} 
+\index{main.cpp@{main.cpp}!max\_num\_trains\_two\_stations@{max\_num\_trains\_two\_stations}}
+\index{max\_num\_trains\_two\_stations@{max\_num\_trains\_two\_stations}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{max\_num\_trains\_two\_stations()}{max\_num\_trains\_two\_stations()}}
+{\footnotesize\ttfamily int max\+\_\+num\+\_\+trains\+\_\+two\+\_\+stations (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_graph}{Graph}}}]{g\+\_\+st,  }\item[{\mbox{\hyperlink{class_graph}{Graph}}}]{g\+\_\+ap,  }\item[{string}]{s1,  }\item[{string}]{s2 }\end{DoxyParamCaption})}
+
+Function that computes maximum num of trains between 2 given stations Complexity\+: O(\+VE$^\wedge$2) \mbox{\Hypertarget{main_8cpp_a747715cdd57c0a3bdae90d55b4f36627}\label{main_8cpp_a747715cdd57c0a3bdae90d55b4f36627}} 
+\index{main.cpp@{main.cpp}!max\_trains\_min\_cost@{max\_trains\_min\_cost}}
+\index{max\_trains\_min\_cost@{max\_trains\_min\_cost}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{max\_trains\_min\_cost()}{max\_trains\_min\_cost()}}
+{\footnotesize\ttfamily void max\+\_\+trains\+\_\+min\+\_\+cost (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_graph}{Graph}}}]{g\+\_\+st,  }\item[{\mbox{\hyperlink{class_graph}{Graph}}}]{g\+\_\+ap }\end{DoxyParamCaption})}
+
+Function that computes maximum num of trains that can travel between 2 stations with minimal cost Complexity\+: O(\+VE$^\wedge$2) \mbox{\Hypertarget{main_8cpp_ad6a29cfb81319542772fb4642c64dba5}\label{main_8cpp_ad6a29cfb81319542772fb4642c64dba5}} 
+\index{main.cpp@{main.cpp}!menuDisplay@{menuDisplay}}
+\index{menuDisplay@{menuDisplay}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{menuDisplay()}{menuDisplay()}}
+{\footnotesize\ttfamily void menu\+Display (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Function that displays the menu Complexity\+: O(1) \mbox{\Hypertarget{main_8cpp_af3cf69e538bf909f69a01090c338cbd8}\label{main_8cpp_af3cf69e538bf909f69a01090c338cbd8}} 
+\index{main.cpp@{main.cpp}!topk\_most\_affected\_stations@{topk\_most\_affected\_stations}}
+\index{topk\_most\_affected\_stations@{topk\_most\_affected\_stations}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{topk\_most\_affected\_stations()}{topk\_most\_affected\_stations()}}
+{\footnotesize\ttfamily void topk\+\_\+most\+\_\+affected\+\_\+stations (\begin{DoxyParamCaption}\item[{vector$<$ pair$<$ string, string $>$ $>$}]{segments,  }\item[{vector$<$ string $>$}]{services,  }\item[{\mbox{\hyperlink{class_graph}{Graph}}}]{original\+\_\+st,  }\item[{\mbox{\hyperlink{class_graph}{Graph}}}]{original\+\_\+ap,  }\item[{int}]{k }\end{DoxyParamCaption})}
+
+Function that computes the top-\/k most affected stations caused by a segment failure Complexity\+: O(n\+V$^\wedge$2\+E$^\wedge$2) 

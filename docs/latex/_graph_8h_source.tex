@@ -1,0 +1,53 @@
+\hypertarget{_graph_8h_source}{}\doxysection{Graph.\+h}
+\label{_graph_8h_source}\index{C:/Users/kensh/OneDrive/Ambiente de Trabalho/Pasta/DA/ProjectDA1/src/Graph.h@{C:/Users/kensh/OneDrive/Ambiente de Trabalho/Pasta/DA/ProjectDA1/src/Graph.h}}
+\mbox{\hyperlink{_graph_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 }
+\DoxyCodeLine{2 \textcolor{preprocessor}{\#ifndef PROJETODA1\_GRAPH\_H}}
+\DoxyCodeLine{3 \textcolor{preprocessor}{\#define PROJETODA1\_GRAPH\_H}}
+\DoxyCodeLine{4 }
+\DoxyCodeLine{5 \textcolor{preprocessor}{\#include <iostream>}}
+\DoxyCodeLine{6 \textcolor{preprocessor}{\#include <vector>}}
+\DoxyCodeLine{7 \textcolor{preprocessor}{\#include <queue>}}
+\DoxyCodeLine{8 \textcolor{preprocessor}{\#include <limits>}}
+\DoxyCodeLine{9 \textcolor{preprocessor}{\#include <algorithm>}}
+\DoxyCodeLine{10 }
+\DoxyCodeLine{11 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_vertex_edge_8h}{VertexEdge.h}}"{}}}
+\DoxyCodeLine{12 }
+\DoxyCodeLine{13 \textcolor{keyword}{class }\mbox{\hyperlink{class_graph}{Graph}} \{}
+\DoxyCodeLine{14 \textcolor{keyword}{public}:}
+\DoxyCodeLine{15     \mbox{\hyperlink{class_graph_a902c5b3eacb66d60752525ab23297a95}{\string~Graph}}();}
+\DoxyCodeLine{16     \textcolor{comment}{/*}}
+\DoxyCodeLine{17 \textcolor{comment}{    * Auxiliary function to find a vertex with a given ID.}}
+\DoxyCodeLine{18 \textcolor{comment}{    */}}
+\DoxyCodeLine{19     \mbox{\hyperlink{class_vertex}{Vertex}} *\mbox{\hyperlink{class_graph_a089f7fc73ea9976295d387846ad36c69}{findVertex}}(\textcolor{keyword}{const} \textcolor{keywordtype}{int} \&\textcolor{keywordtype}{id}) \textcolor{keyword}{const};}
+\DoxyCodeLine{20     \mbox{\hyperlink{class_vertex}{Vertex}} *\mbox{\hyperlink{class_graph_a089f7fc73ea9976295d387846ad36c69}{findVertex}}(\mbox{\hyperlink{class_station}{Station}} s);}
+\DoxyCodeLine{21     \textcolor{comment}{/*}}
+\DoxyCodeLine{22 \textcolor{comment}{     *  Adds a vertex with a given content or info (in) to a graph (this).}}
+\DoxyCodeLine{23 \textcolor{comment}{     *  Returns true if successful, and false if a vertex with that content already exists.}}
+\DoxyCodeLine{24 \textcolor{comment}{     */}}
+\DoxyCodeLine{25     \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_graph_a9084bed8779d4aa1466d92ea112633d4}{addVertex}}(\textcolor{keyword}{const} \textcolor{keywordtype}{int} \&\textcolor{keywordtype}{id}, \mbox{\hyperlink{class_station}{Station}} station);}
+\DoxyCodeLine{26 }
+\DoxyCodeLine{27     \textcolor{comment}{/*}}
+\DoxyCodeLine{28 \textcolor{comment}{     * Adds an edge to a graph (this), given the contents of the source and}}
+\DoxyCodeLine{29 \textcolor{comment}{     * destination vertices and the edge weight (w).}}
+\DoxyCodeLine{30 \textcolor{comment}{     * Returns true if successful, and false if the source or destination vertex does not exist.}}
+\DoxyCodeLine{31 \textcolor{comment}{     */}}
+\DoxyCodeLine{32     \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_graph_a57a2f76874aa7948d56dedf9c803d2e0}{addEdge}}(\textcolor{keyword}{const} \textcolor{keywordtype}{int} \&sourc, \textcolor{keyword}{const} \textcolor{keywordtype}{int} \&dest, \textcolor{keywordtype}{double} w, \textcolor{keywordtype}{string} service);}
+\DoxyCodeLine{33     \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_graph_a8a226e1949c24946eb56a0c25dd6dcdb}{addBidirectionalEdge}}(\textcolor{keyword}{const} \textcolor{keywordtype}{int} \&sourc, \textcolor{keyword}{const} \textcolor{keywordtype}{int} \&dest, \textcolor{keywordtype}{double} w, \textcolor{keywordtype}{string} service);}
+\DoxyCodeLine{34     \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_graph_ac958c62704fabf9c11955bed122fb7db}{bfs\_for\_max\_flow}}(\mbox{\hyperlink{class_vertex}{Vertex}} *s,\mbox{\hyperlink{class_vertex}{Vertex}} *t);}
+\DoxyCodeLine{35     \textcolor{keywordtype}{int} \mbox{\hyperlink{class_graph_a7902f8f8a5ef7cc0319afcc95af0b1a4}{maxFlow}}(\textcolor{keywordtype}{int} source, \textcolor{keywordtype}{int} target);}
+\DoxyCodeLine{36     \textcolor{keywordtype}{int} \mbox{\hyperlink{class_graph_a60da21101f1658064cc842ae3fade3ef}{maxFlow\_minCost}}(\textcolor{keywordtype}{int} source , \textcolor{keywordtype}{int} target, \textcolor{keywordtype}{string} service);}
+\DoxyCodeLine{37     \textcolor{keywordtype}{int} \mbox{\hyperlink{class_graph_abb5e0517e2979c54eebdafc2a9875e8f}{getNumVertex}}() \textcolor{keyword}{const};}
+\DoxyCodeLine{38     std::vector<Vertex *> \mbox{\hyperlink{class_graph_a619ac583094079134074658e29463c0e}{getVertexSet}}() \textcolor{keyword}{const};}
+\DoxyCodeLine{39 \textcolor{keyword}{protected}:}
+\DoxyCodeLine{40     std::vector<Vertex *> \mbox{\hyperlink{class_graph_aa9b0a6d8ad43c5eabaca5a7140bcc8b6}{vertexSet}};    \textcolor{comment}{// vertex set}}
+\DoxyCodeLine{41     \textcolor{comment}{/*}}
+\DoxyCodeLine{42 \textcolor{comment}{     * Finds the index of the vertex with a given content.}}
+\DoxyCodeLine{43 \textcolor{comment}{     */}}
+\DoxyCodeLine{44     \textcolor{keywordtype}{int} \mbox{\hyperlink{class_graph_a7dfcef08a9286cf144902cd7e56940ee}{findVertexIdx}}(\textcolor{keyword}{const} \textcolor{keywordtype}{int} \&\textcolor{keywordtype}{id}) \textcolor{keyword}{const};}
+\DoxyCodeLine{45 \};}
+\DoxyCodeLine{46 }
+\DoxyCodeLine{47 \textcolor{preprocessor}{\#endif }\textcolor{comment}{//PROJETODA1\_GRAPH\_H}}
+
+\end{DoxyCode}
