@@ -1,0 +1,3 @@
+C:/Users/kensh/OneDrive/Ambiente de Trabalho/Pasta/DA/ProjectDA2/cmake-build-debug/CMakeFiles/ProjectDA2.dir
+C:/Users/kensh/OneDrive/Ambiente de Trabalho/Pasta/DA/ProjectDA2/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/kensh/OneDrive/Ambiente de Trabalho/Pasta/DA/ProjectDA2/cmake-build-debug/CMakeFiles/rebuild_cache.dir

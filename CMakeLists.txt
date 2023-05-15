@@ -1,5 +1,6 @@
-cmake_minimum_required(VERSION 3.17)
-project(ProjectDA1)
-set(CMAKE_CXX_STANDARD 11)
+cmake_minimum_required(VERSION 3.23)
+project(ProjectDA2)
 
-add_executable(ProjetoDA1 src/main.cpp src/Station.cpp src/Station.h src/VertexEdge.h src/VertexEdge.cpp src/Graph.h src/Graph.cpp src/file_reader.h src/file_reader.cpp)
+set(CMAKE_CXX_STANDARD 14)
+
+add_executable(ProjectDA2 main.cpp)
